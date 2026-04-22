@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<title>gusta.handicraft｜Travel Yarn 團購</title>
+
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"></script>
+
+<style>
+body {
+  font-family: "Helvetica", sans-serif;
+  background: linear-gradient(#f8f3ed, #efe7dc);
+  padding: 20px;
+  color: #5c4b3b;
+}
+
+h1 {
+  font-weight: 500;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 12px;
+}
+
+.card {
+  background: white;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+.card img {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+}
+
+.card .info {
+  padding: 8px;
+}
+
+input[type=number] {
+  width: 60px;
+}
+
+button {
+  background: #d6bfa6;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  color: white;
+}
+
+.cart {
+  margin-top: 20px;
+  background: white;
+  padding: 12px;
+  border-radius: 12px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🧵 gusta.handicraft</h1>
+<p>Travel Yarn｜Lace 系列｜$880 / 絞</p>
+
+<div class="grid" id="products"></div>
+
+<div class="cart">
+<h3>🛒 購物車</h3>
+<ul id="cart"></ul>
+<p id="total"></p>
+
+<input id="name" placeholder="LINE暱稱">
+<button onclick="submitOrder()">送出訂單</button>
+</div>
+
+<h3>📦 查詢訂單</h3>
+<input id="searchName" placeholder="LINE暱稱">
+<button onclick="searchOrder()">查詢</button>
+<ul id="result"></ul>
+
+<script>
+// 🔥 Firebase設定
+const firebaseConfig = {
+  apiKey: "你的key",
+  authDomain: "你的domain",
+  projectId: "你的project"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+// 🧶 商品（你之後可以改圖片）
+const products = [
+{ name:"001 London", img:"https://via.placeholder.com/300x200?text=London"},
+{ name:"002 Minneapolis", img:"https://via.placeholder.com/300x200?text=Minneapolis"},
+{ name:"003 Praha", img:"https://via.placeholder.com/300x200?text=Praha"},
+{ name:"004 Bukchon", img:"https://via.placeholder.com/300x200?text=Bukchon"},
+{ name:"005 Toronto", img:"https://via.placeholder.com/300x200?text=Toronto"},
+{ name:"006 Grampians", img:"https://via.placeholder.com/300x200?text=Grampians"},
+{ name:"007 Washington DC", img:"https://via.placeholder.com/300x200?text=DC"},
+{ name:"008 Zermatt", img:"https://via.placeholder.com/300x200?text=Zermatt"},
+{ name:"009 New Hampshire", img:"https://via.placeholder.com/300x200?text=NH"}
+];
+
+let cart = [];
+
+function renderProducts(){
+  const el = document.getElementById("products");
+
+  products.forEach(p=>{
+    const div = document.createElement("div");
+    div.className="card";
+
+    div.innerHTML=`
+      <img src="${p.img}">
+      <div class="info">
+        <b>${p.name}</b><br>
+        數量 <input type="number" min="0" value="0" id="${p.name}">
+      </div>
+    `;
+
+    el.appendChild(div);
+  });
+}
+
+function updateCart(){
+  cart = [];
+  let total = 0;
+
+  products.forEach(p=>{
+    let qty = document.getElementById(p.name).value;
+    if(qty>0){
+      cart.push({name:p.name, qty});
+      total += qty * 880;
+    }
+  });
+
+  const el = document.getElementById("cart");
+  el.innerHTML="";
+
+  cart.forEach(i=>{
+    const li = document.createElement("li");
+    li.textContent = `${i.name} x ${i.qty}`;
+    el.appendChild(li);
+  });
+
+  document.getElementById("total").textContent = "總金額 $" + total;
+}
+
+setInterval(updateCart,1000);
+
+function submitOrder(){
+  const name = document.getElementById("name").value;
+  if(!name || cart.length===0){
+    alert("請填暱稱＋選商品");
+    return;
+  }
+
+  db.collection("orders").add({
+    name,
+    cart,
+    status:"未出貨",
+    created:new Date()
+  });
+
+  alert("訂單已送出！");
+}
+
+function searchOrder(){
+  const name = document.getElementById("searchName").value;
+
+  db.collection("orders")
+  .where("name","==",name)
+  .get()
+  .then(snapshot=>{
+    const el = document.getElementById("result");
+    el.innerHTML="";
+
+    snapshot.forEach(doc=>{
+      const d = doc.data();
+
+      const li = document.createElement("li");
+      li.textContent =
+        d.cart.map(i=>i.name+"x"+i.qty).join(", ") +
+        "｜"+d.status;
+
+      el.appendChild(li);
+    });
+  });
+}
+
+renderProducts();
+</script>
+
+</body>
+</html>
