@@ -1,202 +1,2225 @@
-<!DOCTYPE html>
-<html lang="zh-TW">
-<head>
-<meta charset="UTF-8">
-<title>gusta.handicraft｜Travel Yarn 團購</title>
-
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-
-<style>
-body {
-  font-family: "Helvetica", sans-serif;
-  background: linear-gradient(#f8f3ed, #efe7dc);
-  padding: 20px;
-  color: #5c4b3b;
+{\rtf1\ansi\ansicpg950\cocoartf2822
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\fnil\fcharset136 PingFangTC-Regular;\f2\fnil\fcharset0 AppleColorEmoji;
+\f3\fnil\fcharset0 STIXTwoMath-Regular;\f4\fnil\fcharset0 Menlo-Regular;\f5\fnil\fcharset129 AppleSDGothicNeo-Regular;
 }
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww23580\viewh16380\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 
-h1 {
-  font-weight: 500;
+\f0\fs36 \cf0 <!DOCTYPE html>\
+\
+<html lang="zh-TW">\
+<head>\
+<meta charset="UTF-8">\
+<title>gusta.handicraft
+\f1 \'a1\'55
+\f0 Travel Yarn 
+\f1 \'b9\'ce\'c1\'ca
+\f0 </title>\
+\
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>\
+\
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>\
+\
+<style>\
+body\{\
+  font-family:"Helvetica",sans-serif;\
+  background:linear-gradient(#f8f3ed,#efe7dc);\
+  padding:20px;\
+  color:#5c4b3b;\
+\}\
+h1\{font-weight:500;\}\
+.grid\{\
+  display:grid;\
+  grid-template-columns:repeat(auto-fill,minmax(160px,1fr));\
+  gap:12px;\
+\}\
+.card\{\
+  background:white;\
+  border-radius:14px;\
+  overflow:hidden;\
+  box-shadow:0 4px 10px rgba(0,0,0,0.05);\
+\}\
+.card img\{\
+  width:100%;\
+  height:120px;\
+  object-fit:cover;\
+\}\
+.card .info\{padding:8px;\}\
+input\{padding:6px;border-radius:6px;border:1px solid #ccc;\}\
+button\{\
+  background:#d6bfa6;\
+  border:none;\
+  padding:8px 12px;\
+  border-radius:8px;\
+  color:white;\
+  cursor:pointer;\
+\}\
+.cart\{\
+  margin-top:20px;\
+  background:white;\
+  padding:12px;\
+  border-radius:12px;\
+\}\
+#suggestions\{\
+  background:white;\
+  border-radius:8px;\
+  margin-top:4px;\
+\}\
+.totalBox\{\
+  margin-top:20px;\
+  background:white;\
+  padding:12px;\
+  border-radius:12px;\
+\}\
+</style>\
+\
+</head>\
+\
+<body>\
+\
+<h1>
+\f2 \uc0\u55358 \u56821 
+\f0  gusta.handicraft</h1>\
+<p>Travel Yarn
+\f1 \'a1\'55
+\f0 Lace 
+\f1 \'a8\'74\'a6\'43\'a1\'55
+\f0 $880 / 
+\f1 \'b5\'b1
+\f0 </p>\
+\
+<h3>
+\f2 \uc0\u55357 \u56420 
+\f0  
+\f1 \'bf\'ef\'be\'dc\'a7\'41\'aa\'ba\'bc\'ca\'ba\'d9
+\f0 </h3>\
+<input id="name" placeholder="
+\f1 \'bf\'e9\'a4\'4a\'bc\'ca\'ba\'d9
+\f0 ">\
+<div id="suggestions"></div>\
+\
+<div class="grid" id="products"></div>\
+\
+<div class="cart">\
+<h3>
+\f2 \uc0\u55357 \u57042 
+\f0  
+\f1 \'c1\'ca\'aa\'ab\'a8\'ae
+\f0 </h3>\
+<ul id="cart"></ul>\
+<p id="total"></p>\
+<button onclick="submitOrder()">
+\f1 \'b0\'65\'a5\'58\'ad\'71\'b3\'e6
+\f0 </button>\
+</div>\
+\
+<div class="totalBox">\
+<h3>
+\f2 \uc0\u55357 \u56613 
+\f0  
+\f1 \'b9\'ce\'c1\'ca\'b2\'d6\'bf\'6e\'bc\'c6\'b6\'71
+\f0 </h3>\
+<ul id="summary"></ul>\
+</div>\
+\
+<h3>
+\f2 \uc0\u55357 \u56550 
+\f0  
+\f1 \'ac\'64\'b8\'df\'ad\'71\'b3\'e6
+\f0 </h3>\
+<input id="searchName" placeholder="
+\f1 \'bf\'e9\'a4\'4a\'bc\'ca\'ba\'d9
+\f0 ">\
+<button onclick="searchOrder()">
+\f1 \'ac\'64\'b8\'df
+\f0 </button>\
+<ul id="result"></ul>\
+\
+<script>\
+// 
+\f2 \uc0\u55357 \u56613 
+\f0  Firebase\
+const firebaseConfig = \{\
+  apiKey: "AIzaSyDm6qL6HhI_6nv0Uahrb6RqVFh0V7nI000",\
+  authDomain: "gusta-handicraft-91753.firebaseapp.com",\
+  projectId: "gusta-handicraft-91753"\
+\};\
+firebase.initializeApp(firebaseConfig);\
+const db = firebase.firestore();\
+\
+// 
+\f2 \uc0\u55358 \u56822 
+\f0  
+\f1 \'b0\'d3\'ab\'7e
+\f0 \
+const products=[\
+\{name:"001 London"\},\
+\{name:"002 Minneapolis"\},\
+\{name:"003 Praha"\},\
+\{name:"004 Bukchon"\},\
+\{name:"005 Toronto"\},\
+\{name:"006 Grampians"\},\
+\{name:"007 Washington DC"\},\
+\{name:"008 Zermatt"\},\
+\{name:"009 New Hampshire"\}\
+];\
+\
+// 
+\f2 \uc0\u55357 \u56420 
+\f0  
+\f1 \'a6\'57\'b3\'e6\'a1\'5d\'a5\'75\'c5\'e3\'a5\'dc\'b7\'6a\'b4\'4d\'b5\'b2\'aa\'47\'a1\'5e
+\f0 \
+const validUsers = [\
+"0132002351-
+\f1 \'c1\'fa\'a1\'5d
+\f0 shihi
+\f1 \'a1\'5e
+\f0 ",\
+"750Tao loves
+\f1 \'a1\'5d
+\f0 Taoloves
+\f1 \'a1\'5e
+\f0 ",\
+"A
+\f1 \'a1\'5d
+\f0 anita_10969
+\f1 \'a1\'5e
+\f0 ",\
+"AHA-
+\f1 \'a5\'78\'a5\'5f\'a1\'42\'a5\'78\'a4\'a4\'a1\'5d
+\f0 fritzi0209
+\f1 \'a1\'5e
+\f0 ",\
+"Ahcn
+\f1 \'a1\'5d
+\f0 nchawind
+\f1 \'a1\'5e
+\f0 ",\
+"Alis
+\f1 \'a1\'5d
+\f0 light_su
+\f1 \'a1\'5e
+\f0 ",\
+"Amber
+\f1 \'a1\'5d
+\f0 littledeer.tw
+\f1 \'a1\'5e
+\f0 ",\
+"AMBER LEE
+\f1 \'a1\'5d
+\f0 ina241092
+\f1 \'a1\'5e
+\f0 ",\
+"Anita
+\f1 \'a1\'5d
+\f0 yujauwun
+\f1 \'a1\'5e
+\f0 ",\
+"annnnn
+\f1 \'a1\'5d
+\f0 yian530
+\f1 \'a1\'5e
+\f0 ",\
+"Annyy
+\f1 \'a1\'5d
+\f0 cro.nini
+\f1 \'a1\'5e
+\f0 ",\
+"Ave
+\f1 \'a1\'5d
+\f0 ave_hsuan
+\f1 \'a1\'5e
+\f0 ",\
+"bamboo-
+\f1 \'a5\'78\'a5\'5f\'a1\'5d
+\f0 shien_041213
+\f1 \'a1\'5e
+\f0 ",\
+"BiBi
+\f1 \'a1\'5d
+\f0 rryu4y
+\f1 \'a1\'5e
+\f0 ",\
+"Carley
+\f1 \'a1\'5d
+\f0 iron1028
+\f1 \'a1\'5e
+\f0 ",\
+"Carol
+\f1 \'a1\'5d
+\f0 carolp532123
+\f1 \'a1\'5e
+\f0 ",\
+"Chang hhh
+\f1 \'b0\'aa\'b6\'af\'a1\'5d
+\f0 na1234577
+\f1 \'a1\'5e
+\f0 ",\
+"Charlie
+\f1 \'a1\'5d
+\f0 Nksugg
+\f1 \'a1\'5e
+\f0 ",\
+"Chen
+\f1 \'a1\'5d
+\f0 carencarenchen
+\f1 \'a1\'5e
+\f0 ",\
+"CHIEN 
+\f1 \'a5\'78\'a5\'5f\'a1\'5d
+\f0 junhuijian
+\f1 \'a1\'5e
+\f0 ",\
+"Chloe",\
+"Chuchuuu
+\f1 \'a1\'5d
+\f0 apple6865_aa
+\f1 \'a1\'5e
+\f0 ",\
+"Chun123
+\f1 \'a1\'5d\'a1\'5e
+\f0 ",\
+"ChunKK 
+\f1 \'b0\'aa\'b6\'af\'a1\'5d
+\f0 _chun_kuo
+\f1 \'a1\'5e
+\f0 ",\
+"Cih P
+\f1 \'a1\'5d
+\f0 ciihhhhh
+\f1 \'a1\'5e
+\f0 ",\
+"ee
+\f1 \'a1\'5d
+\f0 linshawba
+\f1 \'a1\'5e
+\f0 ",\
+"emilia 
+\f1 \'a5\'78\'a5\'5f
+\f0  
+\f1 \'a1\'5d
+\f0 windland1006
+\f1 \'a1\'5e
+\f0 ",\
+"Emma
+\f1 \'a1\'5d
+\f0 sun2705
+\f1 \'a1\'5e
+\f0 ",\
+"Eve T.
+\f1 \'a1\'5d
+\f0 eve_tsai_
+\f1 \'a1\'5e
+\f0 ",\
+"Feng
+\f1 \'a1\'5d
+\f0 error._.four
+\f1 \'a1\'5e
+\f0 ",\
+"fish 
+\f1 \'b7\'73\'a5\'5f\'a1\'5d
+\f0 peiyu.lan
+\f1 \'a1\'5e
+\f0 ",\
+"fish
+\f2 \uc0\u55357 \u56351 
+\f1 \'a1\'5d
+\f0 fish7674
+\f1 \'a1\'5e
+\f0 ",\
+"Fois
+\f1 \'a1\'5d
+\f0 hidemyselfdeeply
+\f1 \'a1\'5e
+\f0 ",\
+"Hana
+\f1 \'a1\'5d
+\f0 a771130355
+\f1 \'a1\'5e
+\f0 ",\
+"Huang
+\f1 \'a1\'5d
+\f0 xiu.yue.56
+\f1 \'a1\'5e
+\f0 ",\
+"Ida
+\f1 \'a1\'5d
+\f0 owo556655
+\f1 \'a1\'5e
+\f0 ",\
+"Iris 244
+\f1 \'a1\'5d
+\f0 zx51272000
+\f1 \'a1\'5e
+\f0 ",\
+"Ivy C.
+\f1 \'a1\'5d
+\f0 simplyture0125
+\f1 \'a1\'5e
+\f0 ",\
+"J
+\f1 \'a1\'5d
+\f0 boomoops
+\f1 \'a1\'5e
+\f0 ",\
+"J!NG @
+\f1 \'b0\'aa\'b6\'af\'a1\'5d
+\f0 ruya.xia_955
+\f1 \'a1\'5e
+\f0 ",\
+"Janet
+\f1 \'a1\'5d
+\f0 janet._.yci
+\f1 \'a1\'5e
+\f0 ",\
+"Jennis
+\f1 \'a1\'5d\'a1\'5e
+\f0 ",\
+"Jiffany
+\f1 \'a1\'5d
+\f0 flovec1224
+\f1 \'a1\'5e
+\f0 ",\
+"JJJ
+\f1 \'a1\'5d\'a1\'5e
+\f0 ",\
+"K.C
+\f1 \'a1\'5d
+\f0 chu232
+\f1 \'a1\'5e
+\f0 ",\
+"Kaya
+\f1 \'a1\'5d
+\f0 cindy000228
+\f1 \'a1\'5e
+\f0 ",\
+"Kim
+\f1 \'a1\'5d
+\f0 kc0118r
+\f1 \'a1\'5e
+\f0 ",\
+"KK-
+\f1 \'ae\'e7\'b6\'e9\'a1\'5d
+\f0 moocraft.momndau
+\f1 \'a1\'5e
+\f0 ",\
+"KYJ
+\f1 \'a1\'5d
+\f0 yi_jhen922
+\f1 \'a1\'5e
+\f0 ",\
+"Leah
+\f1 \'a1\'5d
+\f0 imsylvialih
+\f1 \'a1\'5e
+\f0 ",\
+"Li
+\f2 \uc0\u55358 \u56949 
+\f1 \'a1\'5d
+\f0 julibloodyjelly
+\f1 \'a1\'5e
+\f0 ",\
+"Lin
+\f1 \'b7\'73\'a5\'5f\'a1\'5d
+\f0 loewejenny
+\f1 \'a1\'5e
+\f0 ",\
+"Ling 
+\f1 \'aa\'e1\'bd\'ac\'a1\'5d
+\f0 zerozhen0828
+\f1 \'a1\'5e
+\f0 ",\
+"Livia
+\f1 \'a1\'5d
+\f0 qpbqpbqpbq
+\f1 \'a1\'5e
+\f0 ",\
+"Louisliu-
+\f1 \'a5\'78\'a5\'5f\'a1\'5d
+\f0 cowpoopoo
+\f1 \'a1\'5e
+\f0 ",\
+"Maggie
+\f1 \'a1\'5d
+\f0 laggy.su
+\f1 \'a1\'5e
+\f0 ",\
+"Mago
+\f1 \'a1\'5d
+\f0 jennyy_wow
+\f1 \'a1\'5e
+\f0 ",\
+"Mais
+\f1 \'a1\'5d
+\f0 yun_xi_lin
+\f1 \'a1\'5e
+\f0 ",\
+"Mandy Chen
+\f1 \'a1\'5d
+\f0 mandy_tsai_lien
+\f1 \'a1\'5e
+\f0 ",\
+"MARU
+\f1 \'a1\'5d
+\f0 immaruwong
+\f1 \'a1\'5e
+\f0 ",\
+"Meng
+\f1 \'a1\'5d
+\f0 man.man_yang
+\f1 \'a1\'5e
+\f0 ",\
+"Meng07
+\f1 \'a1\'5d
+\f0 sszzc1121
+\f1 \'a1\'5e
+\f0 ",\
+"Meowmeow/
+\f1 \'a5\'78\'a5\'5f\'a1\'5d
+\f0 Cestlavi_vi
+\f1 \'a1\'5e
+\f0 ",\
+"Mia880314
+\f1 \'a1\'5d
+\f0 Mia880314
+\f1 \'a1\'5e
+\f0 ",\
+"Mich
+\f1 \'a1\'5d
+\f0 michief.managed
+\f1 \'a1\'5e
+\f0 ",\
+"Mika Lin
+\f1 \'a1\'5d
+\f0 ovoqwpovo
+\f1 \'a1\'5e
+\f0 ",\
+"Miwawa
+\f2 \uc0\u55358 \u56822 
+\f1 \'a5\'78\'a4\'a4\'a1\'5d
+\f0 dabossbb
+\f1 \'a1\'5e
+\f0 ",\
+"molly
+\f1 \'a1\'5d
+\f0 monkey8-_83
+\f1 \'a1\'5e
+\f0 ",\
+"Molly
+\f3 \uc0\u7576 
+\f0  
+\f1 \uc0\u12484 
+\f4 \uc0\u7557 
+\f1 \'a1\'5d
+\f0 __loogll
+\f1 \'a1\'5e
+\f0 ",\
+"N
+\f1 \'a1\'5d
+\f0 lilian_1209
+\f1 \'a1\'5e
+\f0 ",\
+"Nancy Chang
+\f1 \'a1\'5d
+\f0 nancy_chang0129
+\f1 \'a1\'5e
+\f0 ",\
+"nemo
+\f1 \'a1\'5d
+\f0 yumam.c
+\f1 \'a1\'5e
+\f0 ",\
+"NEW
+\f1 \'a1\'5d
+\f0 1_newnew_1
+\f1 \'a1\'5e
+\f0 ",\
+"Peiwen
+\f1 \'ae\'e7\'b6\'e9\'a1\'5d
+\f0 pewen0701
+\f1 \'a1\'5e
+\f0 ",\
+"peiyun
+\f1 \'a1\'5d
+\f0 peiyun44
+\f1 \'a1\'5e
+\f0 ",\
+"PhoebeW
+\f1 \'a1\'5d
+\f0 phoebewu0725
+\f1 \'a1\'5e
+\f0 ",\
+"rachelguo
+\f1 \'a1\'5d
+\f0 rachelguo
+\f1 \'a1\'5e
+\f0 ",\
+"RCN
+\f1 \'a1\'5d
+\f0 wbb116119
+\f1 \'a1\'5e
+\f0 ",\
+"Rita
+\f1 \'a1\'5d
+\f0 vivadog
+\f1 \'a1\'5e
+\f0 ",\
+"Ruby
+\f1 \'a1\'5d
+\f0 ruby.ni
+\f1 \'a1\'5e
+\f0 ",\
+"rudydodo
+\f1 \'a1\'5d
+\f0 rudydodo29
+\f1 \'a1\'5e
+\f0 ",\
+"Rumii
+\f1 \'a1\'5d
+\f0 ru.h05
+\f1 \'a1\'5e
+\f0 ",\
+"
+\f1 \'a2\'e1\'a1\'5d
+\f0 yuchieh_0207
+\f1 \'a1\'5e
+\f0 ",\
+"Sapphire
+\f1 \'a1\'5d
+\f0 laihappydaily
+\f1 \'a1\'5e
+\f0 ",\
+"Selena
+\f1 \'a1\'5d
+\f0 selenaq0q
+\f1 \'a1\'5e
+\f0 ",\
+"Sharon
+\f1 \'a1\'47\'b2\'48\'a4\'f4\'a1\'5d
+\f0 vhsuan_0221
+\f1 \'a1\'5e
+\f0 ",\
+"Sheena
+\f1 \'a1\'5d
+\f0 sheena_nan03
+\f1 \'a1\'5e
+\f0 ",\
+"Siao
+\f1 \'a1\'5d
+\f0 alices.com.tw
+\f1 \'a1\'5e
+\f0 ",\
+"SST
+\f1 \'a1\'5d
+\f0 huang_ssi_ting
+\f1 \'a1\'5e
+\f0 ",\
+"Su-
+\f1 \'b7\'73\'a6\'cb\'a1\'5d\'a1\'5e
+\f0 ",\
+"Sumi
+\f1 \'a1\'5d
+\f0 szumingtsao
+\f1 \'a1\'5e
+\f0 ",\
+"SUN
+\f1 \'a1\'5d
+\f0 dragonfly___hung___
+\f1 \'a1\'5e
+\f0 ",\
+"sylvia
+\f1 \'a1\'5d
+\f0 ruying9224
+\f1 \'a1\'5e
+\f0 ",\
+"Sylviaaa 
+\f1 \'ae\'e7\'b6\'e9\'a1\'5d
+\f0 ssss.yii
+\f1 \'a1\'5e
+\f0 ",\
+"Sylvie 
+\f1 \'ae\'e7\'b6\'e9\'a5\'78\'a5\'5f\'a1\'5d\'a1\'5e
+\f0 ",\
+"Tanya
+\f1 \'a1\'5d
+\f0 ching.tu
+\f1 \'a1\'5e
+\f0 ",\
+"Tong-
+\f1 \'b9\'fc\'a4\'c6\'a1\'5d
+\f0 haitong_lin
+\f1 \'a1\'5e
+\f0 ",\
+"Trekkie
+\f1 \'a1\'5d
+\f0 Dlawldkxi
+\f1 \'a1\'5e
+\f0 ",\
+"Tzu-
+\f1 \'a5\'78\'a5\'5f\'a1\'5d
+\f0 ____ting
+\f1 \'a1\'5e
+\f0 ",\
+"U
+\f1 \'a1\'5d
+\f0 hsulalalala
+\f1 \'a1\'5e
+\f0 ",\
+"Una(Wen)0123
+\f1 \'a1\'5d
+\f0 unawen
+\f1 \'a1\'5e
+\f0 ",\
+"Viviana
+\f2 \uc0\u55356 \u57216 
+\f1 \'b7\'73\'a5\'5f\'a1\'5d
+\f0 viviana.612
+\f1 \'a1\'5e
+\f0 ",\
+"VivkyHh
+\f1 \'a1\'5d
+\f0 vicluvzcomics
+\f1 \'a1\'5e
+\f0 ",\
+"VV
+\f1 \'a1\'5d
+\f0 vagabondsix
+\f1 \'a1\'5e
+\f0 ",\
+"W
+\f1 \'a1\'5d\'a1\'5e
+\f0 ",\
+"Wei
+\f1 \'a5\'78\'a5\'5f\'a1\'5d
+\f0 tsaiwei1124
+\f1 \'a1\'5e
+\f0 ",\
+"Wen111
+\f1 \'a1\'5d
+\f0 key1403
+\f1 \'a1\'5e
+\f0 ",\
+"xax32580
+\f1 \'a1\'5d
+\f0 yanting0513
+\f1 \'a1\'5e
+\f0 ",\
+"YC
+\f1 \'a1\'5d
+\f0 lin_ching0830
+\f1 \'a1\'5e
+\f0 ",\
+"yehchunn
+\f1 \'a1\'5d
+\f0 yehchunn
+\f1 \'a1\'5e
+\f0 ",\
+"Yishuian Wu
+\f1 \'a1\'5d\'a1\'5e
+\f0 ",\
+"YLMNFST
+\f1 \'a1\'5d
+\f0 Yu.luotmnfstfm
+\f1 \'a1\'5e
+\f0 ",\
+"yt
+\f1 \'a1\'5d
+\f0 yt_zh
+\f1 \'a1\'5e
+\f0 ",\
+"ytl
+\f1 \'a1\'5d
+\f0 lighting0704
+\f1 \'a1\'5e
+\f0 ",\
+"Yu33 
+\f1 \'a5\'78\'a5\'5f\'a1\'5d
+\f0 yu_shan__0216
+\f1 \'a1\'5e
+\f0 ",\
+"Yuan
+\f1 \'a1\'5d
+\f0 dietitian_yuan
+\f1 \'a1\'5e
+\f0 ",\
+"yun
+\f1 \'a1\'5d
+\f0 liuxuanyun1616
+\f1 \'a1\'5e
+\f0 ",\
+"YW
+\f1 \'a1\'5d
+\f0 wenwen5425
+\f1 \'a1\'5e
+\f0 ",\
+"Z
+\f1 \'a1\'5d
+\f0 zoechang69
+\f1 \'a1\'5e
+\f0 ",\
+"Zoe
+\f1 \'a1\'5d
+\f0 zoelee1014
+\f1 \'a1\'5e
+\f0 ",\
+"Zoeyyy-
+\f1 \'c2\'f9\'a5\'5f\'a1\'5d
+\f0 iamwuzo
+\f1 \'a1\'5e
+\f0 "\
+
+\f2 \uc0\u10083 \u65039 \u55357 \u56471 \u10083 \u65039 
+\f0 Chiachia
+\f2 \uc0\u10083 \u65039 \u55357 \u56471 \u10083 \u65039 
+\f1 \'a1\'5d\'a1\'5e
+\f0 \
+
+\f1 \'a3\'7e\'a3\'a3\'a1\'5d
+\f0 hohsuan_
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'a3\'b0\'a3\'76\'a1\'5d\'a1\'5e
+\f0 \
+
+\f1 \'a4\'40\'b0\'a6\'ab\'43\'b5\'ec
+\f0  
+\f1 \'a9\'4b\'a9\'4b\'a1\'5d
+\f0 ericayu1120
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'a4\'43\'a4\'43\'a4\'43\'a1\'5d
+\f0 peachni86
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'a4\'59\'a4\'59
+\f0 -
+\f1 \'a5\'78\'ab\'6e\'a1\'5d\'a1\'5e
+\f0 \
+
+\f1 \'a8\'d3\'a5\'68\'c2\'b4\'a4\'40\'b2\'79\'a1\'5d
+\f0 ting8630
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'a8\'df\'ac\'fc\'a1\'5d
+\f0 rottenbrain99
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'b3\'cd\'af\'53\'a1\'5d
+\f0 katehsu
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'a4\'51\'c1\'fb\'b2\'fc\'a5\'5d\'b3\'4a
+\f0 -
+\f1 \'a5\'78\'a5\'5f\'a1\'5d
+\f0 goken79702
+\f1 \'a1\'5e
+\f0 \
+
+\f2 \uc0\u55356 \u57119 
+\f0 Lemon
+\f1 \'a1\'5d
+\f0 remchu
+\f1 \'a1\'5e
+\f0 \
+
+\f2 \uc0\u55357 \u56464 \u10024 
+\f1 \'a1\'5d
+\f0 Emioi_
+\f1 \'a1\'5e
+\f0 \
+
+\f2 \uc0\u55358 \u56724 \u55358 \u56742 \u55356 \u57137 \u55356 \u57156 
+\f1 \'a1\'5d
+\f0 _chia__3
+\f1 \'a1\'5e
+\f0 \
+Nina-
+\f1 \'a5\'78\'ab\'6e\'a1\'5d
+\f0 junina
+\f1 \'a1\'5e
+\f0 \
+
+\f2 \uc0\u55358 \u56768 
+\f0 VN
+\f1 \'a1\'5d
+\f0 vvn96081
+\f1 \'a1\'5e
+\f0 \
+
+\f2 \uc0\u55358 \u56949 
+\f0 SONG
+\f1 \'a1\'5d
+\f0 elaine_8104
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'a4\'6a\'ad\'69\'a1\'5d
+\f0 dahone
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'a4\'70\'ae\'a3\'c0\'73\'a1\'5d
+\f0 aowuaowudinosaur
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'a4\'70\'b3\'c0\'a1\'5d
+\f0 sydney_lw70
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'a4\'e9\'a4\'e9\'af\'f9\'a1\'5d
+\f0 chuneco/LINE
+\f1 \'a1\'47
+\f0 Chiu Chin Ling
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'a4\'eb\'ab\'47
+\f0  
+\f1 \'a5\'78\'a5\'5f\'a1\'5d
+\f0 Tudouz
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'a4\'ec\'a5\'ca\'a1\'5d
+\f0 dreamliu
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'a4\'f2\'a4\'f2\'c2\'ce\'a1\'5d
+\f0 kittychiang0925
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'a5\'6a\'b4\'cb\'a4\'d3\'a4\'d3\'a1\'5d
+\f0 gu.sen.tai.tai
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'a6\'61\'a5\'ca\'a1\'5d
+\f0 wen_8864
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'a6\'68\'b2\'fa\'a1\'5d
+\f0 doryyyc
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'a6\'77\'e3\'b8\'a1\'5d
+\f0 anchenyang
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'a7\'b1
+\f2 \uc0\u55357 \u56474 
+\f1 \'a1\'5d
+\f0 willson_lucky
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'a8\'48\'ab\'a2\'ab\'a2\'a1\'5d
+\f0 _shuwei__
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'a8\'4b\'a1\'5d
+\f0 arielgirlabcdefgh
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'a8\'a9\'a8\'a9\'a1\'5d
+\f0 str.ggle_
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'a8\'bd\'ac\'f6\'c0\'f5\'b5\'71\'b6\'51
+\f0 Valentina
+\f1 \'a1\'5d
+\f0 valentina_vfh_huang
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'a9\'4b\'a9\'4b\'a1\'5d
+\f0 b._t_.ry
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'a9\'42\'a9\'42
+\f0  
+\f1 \'b9\'fc\'a4\'c6
+\f0  
+\f1 \'a5\'78\'a5\'5f\'a1\'5d
+\f0 yenjungjung
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'a9\'5f\'b2\'a7\'b3\'be\'a1\'5d
+\f0 98221wu
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'aa\'47\'b2\'c9\'a1\'5d
+\f0 yuhuilee1229
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'aa\'7e\'a1\'5d
+\f0 akvoluno
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'aa\'ea\'aa\'ea\'a1\'5d
+\f0 emiiy_929
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'aa\'fc\'be\'c7\'a1\'5d
+\f0 jsw0857
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \uc0\u23032 \'bf\'b2\'a1\'5d
+\f0 chiauwang
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'ac\'4f\'a6\'e8\'a5\'ca
+\f2 \uc0\u55356 \u57161 
+\f1 \'a1\'5d
+\f0 ichbinsun
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'ac\'66\'a1\'5d
+\f0 nunununumorn
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'ac\'ee\'a9\'c9
+\f0 231
+\f1 \'a1\'5d
+\f0 chiu860820
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'ad\'44\'ae\'e3\'a1\'5d
+\f0 pangchai.made
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'ad\'57\'a4\'4f\'a4\'66\'a1\'5d
+\f0 mkyyyyai
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'ad\'f3\'a1\'5d
+\f0 yuy_y0619
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'ae\'4c\'af\'f3\'a1\'5d
+\f0 irish219618
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'ae\'e1\'a9\'67\'a1\'5d
+\f0 sunny10_09
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'af\'ce\'b7\'52\'b2\'df
+\f0 760
+\f1 \'a1\'5d
+\f0 hsi_julie
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'af\'d3\'b9\'71\'a4\'70\'a6\'42\'bd\'63\'a1\'5d
+\f0 debola1234
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'af\'f3\'b2\'f9\'a5\'a4\'a9\'f5\'a1\'5d
+\f0 10.22____
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'b0\'7b\'b0\'7b\'a1\'c4\'ae\'e7\'b6\'e9
+\f0  
+\f1 \'a5\'78\'a5\'5f\'a1\'5d
+\f0 weisssshan
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'b0\'a6\'a1\'5d
+\f0 julie.lin.guanyu_0827
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'b0\'aa\'b8\'64\'b0\'73\'a1\'5d
+\f0 liao_man_ting
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'b1\'69\'a6\'77\'ac\'66
+\f0 -
+\f1 \'a5\'78\'a4\'a4\'a1\'5d
+\f0 amberchang1981
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'b0\'d2\'b0\'d2\'a8\'d3\'a1\'5d
+\f0 manyun_yu
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'b2\'5b
+\f0  
+\f1 \'ae\'e7\'b6\'e9\'a1\'5d
+\f0 aforz_
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'b2\'5b\'a1\'5d
+\f0 aforz_
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'b3\'af\'a4\'70\'b2\'5b\'a1\'5d
+\f0 tzu._.han._.1224
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'b3\'af\'a6\'4e\'a8\'e0\'a1\'5d
+\f0 lele_crochet_knit
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'b3\'bd\'a8\'e0\'b3\'bd\'a8\'e0\'a4\'f4\'a4\'a4\'b4\'e5\'a1\'5d
+\f0 su_u.1224
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'b3\'d8\'a9\'d4\'a9\'d4\'a1\'5d
+\f0 _chenyoling_
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'d8\'70\'d8\'70\'a6\'77\'a1\'5d
+\f0 yian1027
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'b4\'b5\'a5\'64\'a1\'5d
+\f0 haney_liu
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'b4\'f2\'a4\'eb
+\f0  
+\f1 \'a5\'78\'a5\'5f\'a1\'5d
+\f0 i_ann5412
+\f1 \'a1\'5e
+\f0 )\
+
+\f1 \'b6\'b3\'a1\'5d
+\f0 loun2355
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'b6\'c2\'bf\'df\'a6\'76\'ab\'e6\'ab\'4b
+\f2 \uc0\u55357 \u56328 \u8205 \u11035 
+\f1 \'a1\'5d
+\f0 squaredfish0107
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'b7\'73\'b2\'f8
+\f0 -
+\f1 \'a4\'fd\'d3\'7d
+\f2 \uc0\u55356 \u57136 
+\f1 \'a1\'5d
+\f0 vvviiivvv
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'dd\'c2\'dd\'c2
+\f0 -
+\f1 \'a5\'78\'a5\'5f\'a1\'5d
+\f0 weiweibi1003004
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'b7\'ec
+\f2 \uc0\u55357 \u56351 
+\f1 \'a1\'5d
+\f0 miwako0220
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'df\'bb\'df\'bb\'a1\'c4\'a5\'78\'a5\'5f\'a1\'5d
+\f0 vonwei_c
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'b8\'a6\'b6\'f0
+\f0 -
+\f1 \'a5\'78\'ab\'6e\'a1\'5d
+\f0 a23867997
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'b9\'cd\'b9\'cd\'d4\'71\'d4\'71\'a1\'5d
+\f0 shang_ling0525
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'ba\'4f\'a6\'e8\'a1\'5d
+\f0 rosiwoo24601
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'e3\'53\'a1\'5d
+\f0 Misschulin
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'bb\'ef
+\f0 --
+\f1 \'b0\'aa\'b6\'af\'a1\'5d
+\f0 cactal2000
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'bc\'e4
+\f0 -
+\f1 \'a5\'78\'a4\'a4\'a1\'5d
+\f0 chung_1019
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'bc\'f6\'b1\'61\'b3\'bd\'a1\'5d
+\f0 Line
+\f1 \'a1\'47
+\f0 Claire
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'bd\'af\'b8\'a6\'a6\'50\'be\'c7\'a1\'5d
+\f0 mandy_crochetweaving
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'bd\'b2\'a1\'5d
+\f0 shu-yun Tsai
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'bd\'bc\'a8\'fd\'a5\'fd\'a1\'5d
+\f0 hi_tsaitsai
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'be\'ed\'c2\'66\'a1\'5d
+\f0 00_chung
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'c3\'5a
+\f2 \uc0\u55358 \u56738 
+\f1 \'a1\'5d\'a1\'5e
+\f0 \
+
+\f1 \'c4\'ac\'c4\'ac\'a1\'5d
+\f0 susuhuei
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'c4\'c9\'a5\'ad
+\f0 -
+\f1 \'ab\'cc\'aa\'46\'a1\'5d
+\f0 gogosister_2024
+\f1 \'a1\'5e
+\f0 \
+
+\f5 \'b9\'cc
+\f2 \uc0\u55358 \u56695 
+\f0  
+\f1 \'bb\'4f\'a5\'5f\'a1\'5d
+\f0 michellesayhi
+\f1 \'a1\'5e
+\f0 \
+
+\f5 \'bb\'d0\'bb\'d0
+\f0  
+\f1 \'a5\'5f\'b3\'a1\'a1\'5d
+\f0 tsitpoo
+\f1 \'a1\'5e
+\f0 \
+
+\f5 \'c0\'af\'c0\'af\'a3\'a8
+\f0 crystal__.98
+\f1 \'a1\'5e
+\f0 \
+Mei
+\f1 \'a1\'5d
+\f0 chunier_mei
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'b3\'bd\'a8\'e0\'a1\'5d
+\f0 y.21uuu
+\f1 \'a1\'5e
+\f0 \
+Hedyyy
+\f1 \'a1\'5d
+\f0 moooj1e
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'b8\'a9\'a1\'5d
+\f0 lt161016
+\f1 \'a1\'5e
+\f0 \
+Ann Chen
+\f1 \'a1\'5d
+\f0 annchen0727
+\f1 \'a1\'5e
+\f0 \
+MMMMi
+\f1 \'a1\'5d
+\f0 _min_924
+\f1 \'a1\'5e
+\f0 \
+Yapple
+\f1 \'a1\'5d
+\f0 wei_yen_pin
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'a8\'a1\'c0\'59\'bf\'df\'bf\'df\'a1\'5d
+\f0 ellachen10.27
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'b5\'e6\'c0\'59\'a1\'5d
+\f0 waterninima
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'a4\'70\'ab\'7d
+\f0 _
+\f1 \'b7\'73\'a5\'5f\'a1\'5d
+\f0 kuomini128
+\f1 \'a1\'5e
+\f0 \
+Hsiang
+\f1 \'a1\'5d
+\f0 tengshine85810
+\f1 \'a1\'5e
+\f0 \
+NicoleH
+\f1 \'a1\'5d
+\f0 ha_xddd
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'bf\'df\'af\'f3\'a1\'5d
+\f0 _yuzhiling
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'bb\'b6\'bb\'b6\'a1\'5d
+\f0 lily___17
+\f1 \'a1\'5e
+\f0 \
+applemom
+\f1 \'b4\'66\'dc\'fe\'a1\'5d
+\f0 angelluo115
+\f1 \'a1\'5e
+\f0 \
+Mindy
+\f1 \'a1\'5d
+\f0 mindymini
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'a4\'70\'aa\'b5\'a1\'5d
+\f0 angelia2988009
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'a6\'79\'a6\'79\'ab\'7a\'b9\'c7\'a4\'44\'a1\'5d
+\f0 mollie3234
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'b9\'54\'b1\'f9\'a1\'5d
+\f0 Minccino1127
+\f1 \'a1\'5e
+\f0 \
+may
+\f1 \'a1\'5d\'bf\'63\'b3\'af\'a5\'fa\'ac\'fc\'a1\'5e
+\f0 \
+noop
+\f1 \'a1\'5d
+\f0 _poyu_
+\f1 \'a1\'5e
+\f0 \
+Salina818
+\f1 \'a1\'5d
+\f0 Salina66918
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'a4\'70\'b3\'d5\'a1\'5d
+\f0 bo_hand_made_
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'aa\'59\'aa\'59\'a1\'5d
+\f0 littlestarcindy
+\f1 \'a1\'5e
+\f0 \
+hsiuping
+\f1 \'a1\'5d
+\f0 hsiupingkuo
+\f1 \'a1\'5e
+\f0 \
+Yo Yo
+\f1 \'a1\'5d
+\f0 y0923
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'d6\'73\'a1\'5d\'a1\'5e
+\f0 \
+Minchun
+\f1 \'a1\'5d
+\f0 Minchun
+\f1 \'a1\'5e
+\f0 \
+Yunghe
+\f1 \'a1\'5d
+\f0 jennyivy23
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'ac\'58
+\f2 \uc0\u55356 \u57170 
+\f1 \'a1\'5d
+\f0 karen12295834
+\f1 \'a1\'5e
+\f0 \
+Yimin
+\f1 \'a1\'5d
+\f0 min.c.1222
+\f1 \'a1\'5e
+\f0 \
+Naaaami
+\f1 \'a1\'5d
+\f0 oui_knithewool
+\f1 \'a1\'5e
+\f0 \
+Elaine
+\f1 \'a1\'5d
+\f0 ela83105inee
+\f1 \'a1\'5e
+\f0 \
+Claire
+\f1 \'a1\'5d\'a8\'53\'a6\'b3
+\f0 ig
+\f1 \'a1\'5e
+\f0 \
+Chung
+\f1 \'a1\'5d
+\f0 chung_0826
+\f1 \'a1\'5e
+\f0 \
+E
+\f1 \'a1\'5d
+\f0 fhj6637134
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'a8\'df\'a4\'6c\'a7\'c0\'a4\'da\'a1\'5d
+\f0 rabbitcee
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'b7\'a2\'b6\'b3\'a1\'5d
+\f0 kaiyunwang
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'a6\'e3\'a4\'70\'bc\'e4\'a1\'5d
+\f0 0088elle8800
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'b2\'ef\'b2\'ef\'b8\'ad\'a1\'5d
+\f0 echoyeh1005
+\f1 \'a1\'5e
+\f0 \
+Mori
+\f1 \'a1\'5d
+\f0 chuchulingpanda
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'e3\'b8\'e3\'b8\'e3\'b8\'a1\'5d
+\f0 dvihi
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'a4\'a3\'b8\'f4\'a1\'5d
+\f0 funore23
+\f1 \'a1\'5e
+\f0 \
+Zoey
+\f1 \'a1\'5d
+\f0 royin_chen
+\f1 \'a1\'5e
+\f0 \
+C
+\f1 \'a1\'5d
+\f0 _chi_0107
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'b6\'ae\'af\'f8\'a1\'5d
+\f0 monkeyyaya718
+\f1 \'a1\'5e
+\f0 \
+
+\f5 \'b8\'db\'a3\'a8
+\f0 cjsi_708249_
+\f1 \'a1\'5e
+\f0 \
+Y Y
+\f1 \'a1\'5d
+\f0 _.yya_157_
+\f1 \'a1\'5e
+\f0 \
+Mita
+\f1 \'a1\'5d
+\f0 Zihcijhou
+\f1 \'a1\'5e
+\f0 \
+Kerina Y
+\f1 \'a1\'5d
+\f0 kerinaxyang
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'b7\'4f\'b7\'4f\'a1\'5d
+\f0 heidi0424
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'ba\'7e\'a7\'4a\'a1\'5d
+\f0 hank_madaw.1994
+\f1 \'a1\'5e
+\f0 \
+li
+\f1 \'a1\'5d
+\f0 imhoude_
+\f1 \'a1\'5e
+\f0 \
+Summer
+\f1 \'a1\'5d
+\f0 Chiwang0317
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'a8\'c5\'b2\'47\'a1\'5d
+\f0 xuan_one.day.one
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'a6\'68\'b2\'fa\'aa\'ba\'b6\'fd\'a1\'5d
+\f0 Weiweiiiiiiii
+\f1 \'a1\'5e
+\f0 \
+Ni
+\f1 \'a1\'5d
+\f0 nicole_890919
+\f1 \'a1\'5e
+\f0 \
+YUN
+\f2 \uc0\u9729 \u65039 
+\f1 \'a1\'5d
+\f0 16________
+\f1 \'a1\'5e
+\f0 \
+Bobo
+\f2 \uc0\u55356 \u57170 
+\f1 \'a1\'5d
+\f0 Hera_ragdoll
+\f1 \'a1\'5e
+\f0 \
+yu
+\f1 \'a1\'5d
+\f0 ytwa_ng9
+\f1 \'a1\'5e
+\f0 \
+Natalie
+\f1 \'a1\'5d
+\f0 natalie.ciao
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'ac\'c3\'af\'5d\'a1\'5d
+\f0 Elsie_777
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'a6\'e7\'a7\'cd\'a1\'5d
+\f0 SU tiring
+\f1 \'a1\'5e
+\f0 \
+Hsuanhsuan
+\f1 \'a1\'5d
+\f0 ilihsuan_1046
+\f1 \'a1\'5e
+\f0 \
+Mico
+\f1 \'a1\'5d
+\f0 arayili_
+\f1 \'a1\'5e
+\f0 \
+Nenemomo
+\f1 \'a1\'5d
+\f0 _am_azing_
+\f1 \'a1\'5e
+\f0 \
+Tian31
+\f1 \'a1\'5d
+\f0 patty6782002
+\f1 \'a1\'5e
+\f0 \
+Alisa
+\f1 \'a1\'5d
+\f0 zhangyaquan
+\f1 \'a1\'5e
+\f0 \
+Cwen
+\f1 \'a1\'5d
+\f0 ms.cwen
+\f1 \'a1\'5e
+\f0 \
+Wu
+\f1 \'a1\'5d
+\f0 angelica_wu
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'a4\'40\'b0\'a6\'b3\'bd\'a1\'5d
+\f0 ruoyu29
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'c4\'43\'a1\'5d
+\f0 soniachih
+\f1 \'a1\'5e
+\f0 \
+suu
+\f1 \'a1\'5d\'a1\'5e
+\f0 \
+Ingrid
+\f1 \'a1\'5d
+\f0 rainbowshouuuu
+\f1 \'a1\'5e
+\f0 \
+Rylie
+\f1 \'a1\'5d
+\f0 yuan_951003
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'ab\'bd\'ab\'bd\'ab\'bd\'a1\'5d
+\f0 karen323_wa
+\f1 \'a1\'5e
+\f0 \
+Cindyy
+\f1 \'a1\'5d
+\f0 niplanet_
+\f1 \'a1\'5e
+\f0 \
+Kiki
+\f2 \uc0\u9729 \u65039 
+\f1 \'a1\'5d
+\f0 yiying._.ki
+\f1 \'a1\'5e
+\f0 \
+universe_rainbow
+\f1 \'a1\'5d
+\f0 universe_rainbow
+\f1 \'a1\'5e
+\f0 \
+JJJJJoy
+\f1 \'a1\'5d
+\f0 ting_fang_pan
+\f1 \'a1\'5e
+\f0 \
+Yuu
+\f1 \'a1\'5d
+\f0 0415_yu
+\f1 \'a1\'5e
+\f0 \
+14
+\f1 \'a1\'5d
+\f0 aoi_dreaming
+\f1 \'a1\'5e
+\f0 \
+Chloe
+\f1 \'a1\'5d
+\f0 renesmee922
+\f1 \'a1\'5e
+\f0 \
+cishanke
+\f1 \'a1\'5d
+\f0 cishanke
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'aa\'fc\'ab\'7d\'ab\'7d\'ab\'7d\'a1\'5d
+\f0 ruby._.0917
+\f1 \'a1\'5e
+\f0 \
+
+\f2 \uc0\u55358 \u57063 
+\f1 \'a1\'5d
+\f0 J.sewile101
+\f1 \'a1\'5e
+\f0 \
+hanha1022
+\f1 \'a1\'5d
+\f0 Han_yu122
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'bc\'50\'a4\'42\'aa\'af\'a1\'5d
+\f0 yachiiiiiiiiii_0808
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'b6\'c2\'bf\'df\'a1\'5d
+\f0 usufuji
+\f1 \'a1\'5e
+\f0 \
+Anna Hu
+\f1 \'a1\'5d
+\f0 Annas_studio_hm
+\f1 \'a1\'5e
+\f0 \
+Connie243
+\f1 \'a1\'5d
+\f0 ConnieSFH
+\f1 \'a1\'5e
+\f0 \
+Rubylu
+\f1 \'a1\'5d
+\f0 rubylu0609
+\f1 \'a1\'5e
+\f0 \
+tientien
+\f1 \'a1\'5d
+\f0 tienny.lin
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'a5\'50\'a5\'50\'a1\'5d\'a1\'5e
+\f0 \
+
+\f1 \'de\'b1\'a1\'5d
+\f0 xuan0624__
+\f1 \'a1\'5e
+\f0 \
+Estrella
+\f1 \'a1\'5d
+\f0 hsin1225n
+\f1 \'a1\'5e
+\f0 \
+Tris
+\f1 \'a1\'5d
+\f0 xiang__1030
+\f1 \'a1\'5e
+\f0 \
+JennyKuo
+\f1 \'a1\'5d
+\f0 jenny780507
+\f1 \'a1\'5e
+\f0 \
+Lulu
+\f1 \'a1\'5d
+\f0 yoyo_ju0717
+\f1 \'a1\'5e
+\f0 \
+
+\f2 \uc0\u10052 \u65039 
+\f1 \'a1\'5d
+\f0 sugarlessmilktea
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'b0\'b4\'b7\'4f\'a1\'5d
+\f0 Yanruoci
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'af\'f8\'a1\'5d
+\f0 silvia8210825
+\f1 \'a1\'5e
+\f0 \
+Lillik-
+\f1 \'bb\'4f\'a5\'5f\'a1\'5d
+\f0 lilisuu
+\f1 \'a1\'5e
+\f0 \
+Zir
+\f1 \'a1\'5d
+\f0 yusun61955
+\f1 \'a1\'5e
+\f0 \
+
+\f2 \uc0\u55357 \u56374 
+\f1 \'ad\'5b\'b2\'fa\'a1\'5d
+\f0 molly_chu1018
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'c4\'ac\'c4\'ac
+\f0 Sulli
+\f1 \'a1\'5d
+\f0 wuwu._.1129
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'a7\'f5\'d7\'5e\'a1\'5d
+\f0 ytlee1996
+\f1 \'a1\'5e
+\f0 \
+mh
+\f1 \'a1\'5d
+\f0 mhtocreate
+\f1 \'a1\'5e
+\f0 \
+muzi
+\f1 \'a1\'5d
+\f0 muzi60520
+\f1 \'a1\'5e
+\f0 \
+Yun
+\f2 \uc0\u9729 \u65039 
+\f0 Yun
+\f1 \'a1\'5d
+\f0 faxfaxpinkpink
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'a4\'70\'ae\'df\'a1\'5d
+\f0 thisisanchi
+\f1 \'a1\'5e
+\f0 \
+Bolu
+\f1 \'a1\'5d
+\f0 bolumi.ry
+\f1 \'a1\'5e
+\f0 \
+Kaku
+\f1 \'a1\'5d
+\f0 peiiiguo
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'a5\'64\'a5\'64\'a1\'5d
+\f0 ka_caaa2
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'a7\'b1\'a1\'5d
+\f0 coco870201
+\f1 \'a1\'5e
+\f0 \
+
+\f1 \'a6\'77\'b5\'e1\'a1\'5d
+\f0 effyh
+\f1 \'a1\'c4\'a1\'5e
+\f0 \
+
+\f1 \'a4\'e9\'a4\'e5\'a4\'44\'a1\'5d
+\f0 juniper0208
+\f1 \'a1\'5e
+\f0 \
+Kristy
+\f1 \'a1\'5d
+\f0 kristy_1328
+\f1 \'a1\'5e\'a1\'a8,
+\f0 \
+Maru.s
+\f1 \'a1\'5d
+\f0 maru_shen
+\f1 \'a1\'5e
+\f0 \
+Phoebs
+\f1 \'a1\'5d
+\f0 Phoebe1015
+\f1 \'a1\'5e\'a1\'a8,
+\f0 \
+pei
+\f1 \'a1\'5d
+\f0 yuiauc
+\f1 \'a1\'5e\'a1\'a8,
+\f0 \
+VickyHh
+\f1 \'a1\'5d
+\f0 vicluvzcomics
+\f1 \'a1\'5e\'a1\'a8,
+\f0 \
+han
+\f1 \'a1\'5d
+\f0 sxhan._.oni
+\f1 \'a1\'5e\'a1\'a8,
+\f0 \
+Lemon1
+\f1 \'a1\'5d
+\f0 Sunny520716li
+\f1 \'a1\'5e\'a1\'a8,
+\f0 \
+Luuuuuuuu
+\f1 \'a1\'5d
+\f0 lulu8219
+\f1 \'a1\'5e\'a1\'a8,
+\f0 \
+Michele
+\f1 \'a1\'5d
+\f0 han.k__
+\f1 \'a1\'5e\'a1\'a8,
+\f0 \
+ruby_870506
+\f1 \'a1\'5d
+\f0 ruby_870506
+\f1 \'a1\'5e\'a1\'a8,
+\f0 \
+
+\f1 \'b7\'a8\'a1\'5d
+\f0 wei.851011
+\f1 \'a1\'5e\'a1\'a8,
+\f0 \
+
+\f1 \'aa\'e1\'a6\'c7\'a1\'5d
+\f0 hua1527
+\f1 \'a1\'5e
+\f0 )
+\f1 \'a1\'a8,
+\f0 \
+
+\f2 \uc0\u55358 \u56768 
+\f1 \'b3\'af\'b7\'e7\'b5\'5e\'a1\'5d
+\f0 ruiqin.c
+\f1 \'a1\'5e\'a1\'a8,
+\f0 \
+Mei809
+\f1 \'a1\'5d
+\f0 mei656565
+\f1 \'a1\'5e\'a1\'a8,
+\f0 \
+TzuYu
+\f1 \'a1\'5d
+\f0 liu_yuu.47
+\f1 \'a1\'5e\'a1\'a8,
+\f0 \
+
+\f1 \'b3\'df\'a9\'40\'af\'f7\'a1\'5d
+\f0 aprilkao
+\f1 \'a1\'5e\'a1\'a8,
+\f0 \
+Chichiiii
+\f1 \'a1\'5d
+\f0 Chillihc_7
+\f1 \'a1\'5e\'a1\'a8,
+\f0 \
+
+\f1 \'be\'e5\'a1\'5d
+\f0 liutechen
+\f1 \'a1\'5e\'a1\'a8,
+\f0 \
+meng_m
+\f1 \'a1\'5d
+\f0 meng_naio.3
+\f1 \'a1\'5e\'a1\'a8,
+\f0 \
+
+\f1 \'a4\'43\'a4\'43\'a1\'5d
+\f0 dena._.y
+\f1 \'a1\'5e\'a1\'a8,
+\f0 \
+
+\f1 \'ae\'78\'a4\'6c\'a1\'5d
+\f0 wst.0329
+\f1 \'a1\'5e\'a1\'a8,
+\f0 \
+
+\f1 \'aa\'4c\'aa\'e9\uc0\u20120 
+\f0 Amy
+\f1 \'a1\'5d
+\f0 linemmie
+\f1 \'a1\'5e\'a1\'a8,
+\f0 \
+Emily
+\f2 \uc0\u10084 \u65039 
+\f1 \'a1\'5d
+\f0 zpxzpxkimo
+\f1 \'a1\'5e\'a1\'a8,
+\f0 \
+irene
+\f1 \'a1\'5d
+\f0 wan_ning_l
+\f1 \'a1\'5e\'a1\'a8,
+\f0 \
+
+\f1 \'a4\'70
+\f0 K
+\f1 \'a1\'5d
+\f0 yuanyuan__kk
+\f1 \'a1\'5e\'a1\'a8,
+\f0 \
+
+\f1 \'ba\'f8\'ba\'f8\'a1\'5d
+\f0 sakuramom3
+\f1 \'a1\'5e\'a1\'a8,
+\f0 \
+
+\f1 \'bb\'c4\'a1\'5d
+\f0 suan_chichi_crochet
+\f1 \'a1\'5e\'a1\'a8,
+\f0 \
+SharonL
+\f1 \'a1\'5d
+\f0 hsiuhsuan__
+\f1 \'a1\'5e\'a1\'a8,
+\f0 \
+
+\f1 \'a8\'a7\'a8\'a7\'a8\'a7\'a1\'5d
+\f0 zona.c
+\f1 \'a1\'5e\'a1\'a8,
+\f0 \
+KerF
+\f1 \'a1\'5d
+\f0 jj82tw
+\f1 \'a1\'5e\'a1\'a8,
+\f0 \
+shan
+\f1 \'a1\'5d
+\f0 vicky761206
+\f1 \'a1\'5e\'a1\'a8,
+\f0 \
+Joanne
+\f1 \'a1\'5d
+\f0 joanne.chou.18
+\f1 \'a1\'5e\'a1\'a8,
+\f0 \
+Vita
+\f1 \'a1\'5d\'a1\'5e\'a1\'a8,
+\f0 \
+Ga.
+\f1 \'a1\'5d
+\f0 erihannn
+\f1 \'a1\'5e\'a1\'a8,
+\f0 \
+
+\f1 \'bf\'df\'a1\'5d
+\f0 Fang0531
+\f1 \'a1\'5e\'a1\'a8,
+\f0 \
+\'93Gali
+\f1 \'a1\'5d
+\f0 chiaowei_hsu
+\f1 \'a1\'5e\'a1\'a8,
+\f0 \
+
+\f1 \'a1\'a7\'a6\'e3\'ab\'7d\'a1\'5d
+\f0 Amy.chai0725
+\f1 \'a1\'5e
+\f0 \'94,\
+];\
+\
+// 
+\f2 \uc0\u55357 \u56589 
+\f0  
+\f1 \'b7\'6a\'b4\'4d
+\f0 \
+const input=document.getElementById("name");\
+const box=document.getElementById("suggestions");\
+\
+input.addEventListener("input",function()\{\
+  const keyword=this.value.toLowerCase();\
+  box.innerHTML="";\
+  if(keyword.length<1)return;\
+\
+  validUsers\
+  .filter(n=>n.toLowerCase().includes(keyword))\
+  .slice(0,10)\
+  .forEach(n=>\{\
+    const div=document.createElement("div");\
+    div.textContent=n;\
+    div.onclick=()=>\{\
+      input.value=n;\
+      box.innerHTML="";\
+    \};\
+    box.appendChild(div);\
+  \});\
+\});\
+\
+// 
+\f2 \uc0\u55358 \u56822 
+\f0  render
+\f1 \'b0\'d3\'ab\'7e
+\f0 \
+let cart=[];\
+\
+function renderProducts()\{\
+  const el=document.getElementById("products");\
+  products.forEach(p=>\{\
+    const div=document.createElement("div");\
+    div.className="card";\
+    div.innerHTML=`\
+      <div class="info">\
+      <b>$\{p.name\}</b><br>\
+      <input type="number" min="0" value="0" id="$\{p.name\}">\
+      </div>`;\
+    el.appendChild(div);\
+  \});\
+\}\
+\
+// 
+\f2 \uc0\u55357 \u57042 
+\f0  
+\f1 \'a7\'f3\'b7\'73\'c1\'ca\'aa\'ab\'a8\'ae
+\f0 \
+function updateCart()\{\
+  cart=[];\
+  let total=0;\
+\
+  products.forEach(p=>\{\
+    let qty=Number(document.getElementById(p.name).value);\
+    if(qty>0)\{\
+      cart.push(\{name:p.name,qty\});\
+      total+=qty*880;\
+    \}\
+  \});\
+\
+  const el=document.getElementById("cart");\
+  el.innerHTML="";\
+  cart.forEach(i=>\{\
+    const li=document.createElement("li");\
+    li.textContent=i.name+" x "+i.qty;\
+    el.appendChild(li);\
+  \});\
+\
+  document.getElementById("total").textContent="
+\f1 \'c1\'60\'aa\'f7\'c3\'42
+\f0  $"+total;\
+\}\
+setInterval(updateCart,800);\
+\
+// 
+\f2 \uc0\u55357 \u56960 
+\f0  
+\f1 \'b0\'65\'a5\'58\'ad\'71\'b3\'e6
+\f0 \
+function submitOrder()\{\
+  const name=input.value;\
+\
+  if(!validUsers.includes(name))\{\
+    alert("
+\f1 \'bd\'d0\'b1\'71\'a6\'57\'b3\'e6\'bf\'ef\'be\'dc\'bc\'ca\'ba\'d9
+\f0 ");\
+    return;\
+  \}\
+  if(cart.length===0)\{\
+    alert("
+\f1 \'bd\'d0\'bf\'ef\'b0\'d3\'ab\'7e
+\f0 ");\
+    return;\
+  \}\
+\
+  db.collection("orders").add(\{\
+    name,\
+    cart,\
+    created:new Date()\
+  \});\
+\
+  alert("
+\f1 \'ad\'71\'b3\'e6\'a4\'77\'b0\'65\'a5\'58\'a1\'49
+\f0 ");\
+\}\
+\
+// 
+\f2 \uc0\u55357 \u56589 
+\f0  
+\f1 \'ac\'64\'b8\'df\'ad\'71\'b3\'e6
+\f0 \
+function searchOrder()\{\
+  const name=document.getElementById("searchName").value;\
+  db.collection("orders").where("name","==",name).get()\
+  .then(snapshot=>\{\
+    const el=document.getElementById("result");\
+    el.innerHTML="";\
+    snapshot.forEach(doc=>\{\
+      const d=doc.data();\
+      const li=document.createElement("li");\
+      li.textContent=d.cart.map(i=>i.name+"x"+i.qty).join(", ");\
+      el.appendChild(li);\
+    \});\
+  \});\
+\}\
+\
+// 
+\f2 \uc0\u55357 \u56613 
+\f0  
+\f1 \'a7\'59\'ae\'c9\'b2\'d6\'ad\'70
+\f0 \
+function loadSummary()\{\
+  db.collection("orders").onSnapshot(snapshot=>\{\
+    let totalMap=\{\};\
+\
+    snapshot.forEach(doc=>\{\
+      doc.data().cart.forEach(i=>\{\
+        totalMap[i.name]=(totalMap[i.name]||0)+i.qty;\
+      \});\
+    \});\
+\
+    const el=document.getElementById("summary");\
+    el.innerHTML="";\
+\
+    Object.keys(totalMap).forEach(name=>\{\
+      const li=document.createElement("li");\
+      li.textContent=`$\{name\}
+\f1 \'a1\'47
+\f0 $\{totalMap[name]\} 
+\f1 \'b5\'b1
+\f0 `;\
+      el.appendChild(li);\
+    \});\
+  \});\
+\}\
+\
+renderProducts();\
+loadSummary();\
+</script>\
+\
+</body>\
+</html>\
 }
-
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  gap: 12px;
-}
-
-.card {
-  background: white;
-  border-radius: 14px;
-  overflow: hidden;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-}
-
-.card img {
-  width: 100%;
-  height: 120px;
-  object-fit: cover;
-}
-
-.card .info {
-  padding: 8px;
-}
-
-input[type=number] {
-  width: 60px;
-}
-
-button {
-  background: #d6bfa6;
-  border: none;
-  padding: 8px 12px;
-  border-radius: 8px;
-  color: white;
-}
-
-.cart {
-  margin-top: 20px;
-  background: white;
-  padding: 12px;
-  border-radius: 12px;
-}
-</style>
-</head>
-
-<body>
-
-<h1>🧵 gusta.handicraft</h1>
-<p>Travel Yarn｜Lace 系列｜$880 / 絞</p>
-
-<div class="grid" id="products"></div>
-
-<div class="cart">
-<h3>🛒 購物車</h3>
-<ul id="cart"></ul>
-<p id="total"></p>
-
-<input id="name" placeholder="LINE暱稱">
-<button onclick="submitOrder()">送出訂單</button>
-</div>
-
-<h3>📦 查詢訂單</h3>
-<input id="searchName" placeholder="LINE暱稱">
-<button onclick="searchOrder()">查詢</button>
-<ul id="result"></ul>
-
-<script>
-// 🔥 Firebase設定
-const firebaseConfig = {
-  apiKey: "你的key",
-  authDomain: "你的domain",
-  projectId: "你的project"
-};
-
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-
-// 🧶 商品（你之後可以改圖片）
-const products = [
-{ name:"001 London", img:"https://via.placeholder.com/300x200?text=London"},
-{ name:"002 Minneapolis", img:"https://via.placeholder.com/300x200?text=Minneapolis"},
-{ name:"003 Praha", img:"https://via.placeholder.com/300x200?text=Praha"},
-{ name:"004 Bukchon", img:"https://via.placeholder.com/300x200?text=Bukchon"},
-{ name:"005 Toronto", img:"https://via.placeholder.com/300x200?text=Toronto"},
-{ name:"006 Grampians", img:"https://via.placeholder.com/300x200?text=Grampians"},
-{ name:"007 Washington DC", img:"https://via.placeholder.com/300x200?text=DC"},
-{ name:"008 Zermatt", img:"https://via.placeholder.com/300x200?text=Zermatt"},
-{ name:"009 New Hampshire", img:"https://via.placeholder.com/300x200?text=NH"}
-];
-
-let cart = [];
-
-function renderProducts(){
-  const el = document.getElementById("products");
-
-  products.forEach(p=>{
-    const div = document.createElement("div");
-    div.className="card";
-
-    div.innerHTML=`
-      <img src="${p.img}">
-      <div class="info">
-        <b>${p.name}</b><br>
-        數量 <input type="number" min="0" value="0" id="${p.name}">
-      </div>
-    `;
-
-    el.appendChild(div);
-  });
-}
-
-function updateCart(){
-  cart = [];
-  let total = 0;
-
-  products.forEach(p=>{
-    let qty = document.getElementById(p.name).value;
-    if(qty>0){
-      cart.push({name:p.name, qty});
-      total += qty * 880;
-    }
-  });
-
-  const el = document.getElementById("cart");
-  el.innerHTML="";
-
-  cart.forEach(i=>{
-    const li = document.createElement("li");
-    li.textContent = `${i.name} x ${i.qty}`;
-    el.appendChild(li);
-  });
-
-  document.getElementById("total").textContent = "總金額 $" + total;
-}
-
-setInterval(updateCart,1000);
-
-function submitOrder(){
-  const name = document.getElementById("name").value;
-  if(!name || cart.length===0){
-    alert("請填暱稱＋選商品");
-    return;
-  }
-
-  db.collection("orders").add({
-    name,
-    cart,
-    status:"未出貨",
-    created:new Date()
-  });
-
-  alert("訂單已送出！");
-}
-
-function searchOrder(){
-  const name = document.getElementById("searchName").value;
-
-  db.collection("orders")
-  .where("name","==",name)
-  .get()
-  .then(snapshot=>{
-    const el = document.getElementById("result");
-    el.innerHTML="";
-
-    snapshot.forEach(doc=>{
-      const d = doc.data();
-
-      const li = document.createElement("li");
-      li.textContent =
-        d.cart.map(i=>i.name+"x"+i.qty).join(", ") +
-        "｜"+d.status;
-
-      el.appendChild(li);
-    });
-  });
-}
-
-renderProducts();
-</script>
-
-</body>
-</html>
