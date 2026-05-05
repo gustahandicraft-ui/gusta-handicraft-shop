@@ -1,327 +1,269 @@
-{\rtf1\ansi\ansicpg950\cocoartf2822
-\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\fnil\fcharset136 PingFangTC-Regular;\f2\fnil\fcharset0 AppleColorEmoji;
-}
-{\colortbl;\red255\green255\blue255;}
-{\*\expandedcolortbl;;}
-\paperw11900\paperh16840\margl1440\margr1440\vieww23580\viewh16380\viewkind0
-\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<title>gusta.handicraft｜Travel Yarn 團購</title>
 
-\f0\fs36 \cf0 <!DOCTYPE html>\
-<html lang="zh-TW">\
-<head>\
-<meta charset="UTF-8">\
-<title>gusta.handicraft
-\f1 \'a1\'55
-\f0 Travel Yarn 
-\f1 \'b9\'ce\'c1\'ca
-\f0 </title>\
-\
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>\
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>\
-\
-<style>\
-body \{\
-  font-family: sans-serif;\
-  background: linear-gradient(#f8f3ed, #efe7dc);\
-  padding: 20px;\
-\}\
-\
-h1 \{ color:#5c4b3b; \}\
-\
-.grid \{\
-  display: grid;\
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));\
-  gap: 12px;\
-\}\
-\
-.card \{\
-  background: white;\
-  border-radius: 12px;\
-  padding:10px;\
-\}\
-\
-.count \{\
-  font-size:12px;\
-  color:#888;\
-\}\
-\
-input \{\
-  padding:6px;\
-  margin:6px 0;\
-  width:100%;\
-\}\
-\
-button \{\
-  background:#d6bfa6;\
-  color:white;\
-  border:none;\
-  padding:10px;\
-  border-radius:8px;\
-  width:100%;\
-\}\
-\
-.cart \{\
-  margin-top:20px;\
-  background:white;\
-  padding:12px;\
-  border-radius:12px;\
-\}\
-</style>\
-</head>\
-\
-<body>\
-\
-<h1>
-\f2 \uc0\u55358 \u56821 
-\f0  gusta.handicraft</h1>\
-<p>Travel Yarn Lace
-\f1 \'a1\'55
-\f0 $880</p>\
-\
-<h3>
-\f2 \uc0\u55357 \u56420 
-\f0  
-\f1 \'b6\'f1\'bc\'67\'b8\'ea\'ae\'c6
-\f0 </h3>\
-<input id="name" placeholder="
-\f1 \'bd\'d0\'b6\'f1\'bc\'67
-\f0 LINE
-\f1 \'bc\'ca\'ba\'d9
-\f0 ">\
-<input id="ig" placeholder="
-\f1 \'bd\'d0\'b6\'f1\'bc\'67
-\f0 IG
-\f1 \'b1\'62\'b8\'b9\'a1\'5d\'ad\'59\'a8\'cf\'a5\'ce
-\f0 LINE
-\f1 \'a5\'69\'b6\'f1
-\f0 LINE
-\f1 \'a6\'57\'ba\'d9\'a1\'5e
-\f0 ">\
-\
-<div class="grid" id="products"></div>\
-\
-<div class="cart">\
-<h3>
-\f2 \uc0\u55357 \u57042 
-\f0  
-\f1 \'c1\'ca\'aa\'ab\'a8\'ae
-\f0 </h3>\
-<ul id="cart"></ul>\
-<p id="total"></p>\
-<button onclick="submitOrder()">
-\f1 \'b0\'65\'a5\'58\'ad\'71\'b3\'e6
-\f0 </button>\
-</div>\
-\
-<h3>
-\f2 \uc0\u55357 \u56550 
-\f0  
-\f1 \'ac\'64\'b8\'df\'ad\'71\'b3\'e6
-\f0 </h3>\
-<input id="searchName" placeholder="
-\f1 \'bf\'e9\'a4\'4a
-\f0 LINE
-\f1 \'bc\'ca\'ba\'d9
-\f0 ">\
-<button onclick="searchOrder()">
-\f1 \'ac\'64\'b8\'df
-\f0 </button>\
-<ul id="result"></ul>\
-\
-<script>\
-// 
-\f2 \uc0\u55357 \u56613 
-\f0  Firebase
-\f1 \'a1\'5d\'b4\'ab\'a6\'a8\'a7\'41\'aa\'ba\'a1\'5e
-\f0 \
-const firebaseConfig = \{\
-  apiKey: "
-\f1 \'a7\'41\'aa\'ba
-\f0 key",\
-  authDomain: "
-\f1 \'a7\'41\'aa\'ba
-\f0 domain",\
-  projectId: "
-\f1 \'a7\'41\'aa\'ba
-\f0 project"\
-\};\
-\
-firebase.initializeApp(firebaseConfig);\
-const db = firebase.firestore();\
-\
-// 
-\f1 \'b0\'d3\'ab\'7e
-\f0 \
-const products = [\
-"001 London",\
-"002 Minneapolis",\
-"003 Praha",\
-"004 Bukchon",\
-"005 Toronto",\
-"006 Grampians",\
-"007 Washington DC",\
-"008 Zermatt",\
-"009 New Hampshire"\
-];\
-\
-let cart = [];\
-\
-// 
-\f1 \'b4\'e8\'ac\'56\'b0\'d3\'ab\'7e
-\f0 \
-function renderProducts()\{\
-  const el = document.getElementById("products");\
-\
-  products.forEach(name=>\{\
-    const div = document.createElement("div");\
-    div.className="card";\
-\
-    div.innerHTML=`\
-      <b>$\{name\}</b><br>\
-      <div class="count" id="count-$\{name\}">
-\f1 \'b8\'fc\'a4\'4a\'a4\'a4
-\f0 ...</div>\
-      
-\f1 \'bc\'c6\'b6\'71
-\f0  <input type="number" min="0" value="0" id="$\{name\}">\
-    `;\
-\
-    el.appendChild(div);\
-  \});\
-\}\
-\
-// 
-\f1 \'a7\'59\'ae\'c9\'b2\'ce\'ad\'70
-\f2 \uc0\u55357 \u56613 
-\f0 \
-function loadCounts()\{\
-  let totals = \{\};\
-\
-  products.forEach(p=> totals[p]=0);\
-\
-  db.collection("orders").get().then(snapshot=>\{\
-    snapshot.forEach(doc=>\{\
-      const data = doc.data();\
-      data.cart.forEach(item=>\{\
-        totals[item.name] += Number(item.qty);\
-      \});\
-    \});\
-\
-    products.forEach(p=>\{\
-      const el = document.getElementById("count-"+p);\
-      if(el)\{\
-        el.textContent = "
-\f1 \'a5\'d8\'ab\'65\'b9\'ce\'c1\'ca\'bc\'c6\'b6\'71\'a1\'47
-\f0 " + totals[p];\
-      \}\
-    \});\
-  \});\
-\}\
-\
-// 
-\f1 \'c1\'ca\'aa\'ab\'a8\'ae
-\f0 \
-function updateCart()\{\
-  cart = [];\
-  let total = 0;\
-\
-  products.forEach(p=>\{\
-    let qty = document.getElementById(p).value;\
-    if(qty>0)\{\
-      cart.push(\{name:p, qty\});\
-      total += qty * 880;\
-    \}\
-  \});\
-\
-  const el = document.getElementById("cart");\
-  el.innerHTML="";\
-\
-  cart.forEach(i=>\{\
-    const li = document.createElement("li");\
-    li.textContent = `$\{i.name\} x $\{i.qty\}`;\
-    el.appendChild(li);\
-  \});\
-\
-  document.getElementById("total").textContent = "
-\f1 \'c1\'60\'aa\'f7\'c3\'42
-\f0  $" + total;\
-\}\
-\
-setInterval(updateCart,1000);\
-\
-// 
-\f1 \'b0\'65\'a5\'58\'ad\'71\'b3\'e6
-\f0 \
-function submitOrder()\{\
-  const name = document.getElementById("name").value;\
-  const ig = document.getElementById("ig").value;\
-\
-  if(!name || !ig)\{\
-    alert("
-\f1 \'bd\'d0\'b6\'f1\'bc\'67\'bc\'ca\'ba\'d9\'bb\'50
-\f0 IG/LINE");\
-    return;\
-  \}\
-\
-  if(cart.length===0)\{\
-    alert("
-\f1 \'bd\'d0\'bf\'ef\'b0\'d3\'ab\'7e
-\f0 ");\
-    return;\
-  \}\
-\
-  db.collection("orders").add(\{\
-    name,\
-    ig,\
-    cart,\
-    status:"
-\f1 \'a5\'bc\'a5\'58\'b3\'66
-\f0 ",\
-    created:new Date()\
-  \}).then(()=>\{\
-    alert("
-\f1 \'ad\'71\'b3\'e6\'a4\'77\'b0\'65\'a5\'58\'a1\'49
-\f0 ");\
-    loadCounts(); // 
-\f1 \'a7\'f3\'b7\'73\'bc\'c6\'b6\'71
-\f0 \
-  \});\
-\}\
-\
-// 
-\f1 \'ac\'64\'b8\'df
-\f0 \
-function searchOrder()\{\
-  const name = document.getElementById("searchName").value;\
-\
-  db.collection("orders")\
-  .where("name","==",name)\
-  .get()\
-  .then(snapshot=>\{\
-    const el = document.getElementById("result");\
-    el.innerHTML="";\
-\
-    snapshot.forEach(doc=>\{\
-      const d = doc.data();\
-\
-      const li = document.createElement("li");\
-      li.textContent =\
-        d.cart.map(i=>i.name+"x"+i.qty).join(", ") +\
-        "
-\f1 \'a1\'55
-\f0 "+d.status;\
-\
-      el.appendChild(li);\
-    \});\
-  \});\
-\}\
-\
-// 
-\f1 \'aa\'ec\'a9\'6c\'a4\'c6
-\f0 \
-renderProducts();\
-loadCounts();\
-</script>\
-\
-</body>\
-</html>}
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+<style>
+body {
+  font-family: "Helvetica", sans-serif;
+  background: linear-gradient(#f8f3ed, #efe7dc);
+  padding: 20px;
+  color: #5c4b3b;
+}
+
+h1 {
+  font-weight: 500;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  margin: 6px 0;
+  border-radius: 10px;
+  border: 1px solid #e5d5c3;
+  background: #fffaf5;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 12px;
+}
+
+.card {
+  background: white;
+  border-radius: 14px;
+  padding: 10px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+.qty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.qty button {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  background: #d6bfa6;
+  color: white;
+  cursor: pointer;
+}
+
+.qty span {
+  min-width: 20px;
+  text-align: center;
+}
+
+button.submit {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 12px;
+  background: #cbb59b;
+  color: white;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+.cart {
+  margin-top: 20px;
+  background: white;
+  padding: 12px;
+  border-radius: 12px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🧵 gusta.handicraft</h1>
+<p>Travel Yarn Lace｜$880</p>
+
+<h3>👤 填寫資料</h3>
+<input id="name" placeholder="請填寫LINE社群完整暱稱">
+<input id="ig" placeholder="請填寫IG帳號（若使用LINE可填LINE名稱）">
+
+<div class="grid" id="products"></div>
+
+<div class="cart">
+<h3>🛒 購物車</h3>
+<ul id="cart"></ul>
+<p id="total">總金額 $0</p>
+<button class="submit" onclick="submitOrder()">送出訂單</button>
+</div>
+
+<h3>📦 查詢訂單</h3>
+<input id="searchName" placeholder="輸入LINE暱稱">
+<button class="submit" onclick="searchOrder()">查詢</button>
+<ul id="result"></ul>
+
+<script>
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDm6qL6HhI_6nv0Uahrb6RqVFh0V7nI000",
+  authDomain: "gusta-handicraft-91753.firebaseapp.com",
+  projectId: "gusta-handicraft-91753"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+// 商品
+const products = [
+{ id:"001_London", name:"001 London" },
+{ id:"002_Minneapolis", name:"002 Minneapolis" },
+{ id:"003_Praha", name:"003 Praha" },
+{ id:"004_Bukchon", name:"004 Bukchon" },
+{ id:"005_Toronto", name:"005 Toronto" },
+{ id:"006_Grampians", name:"006 Grampians" },
+{ id:"007_DC", name:"007 Washington DC" },
+{ id:"008_Zermatt", name:"008 Zermatt" },
+{ id:"009_NH", name:"009 New Hampshire" }
+];
+
+let cart = {};
+
+// 渲染商品
+function renderProducts(){
+  const el = document.getElementById("products");
+
+  products.forEach(p=>{
+    const div = document.createElement("div");
+    div.className="card";
+
+    div.innerHTML=`
+      <b>${p.name}</b>
+      <div>目前團購數量：<span id="total-${p.id}">0</span></div>
+      <div class="qty">
+        <button onclick="changeQty('${p.id}', -1)">－</button>
+        <span id="qty-${p.id}">0</span>
+        <button onclick="changeQty('${p.id}', 1)">＋</button>
+      </div>
+    `;
+
+    el.appendChild(div);
+  });
+}
+
+// +- 按鈕
+function changeQty(id, delta){
+  const el = document.getElementById("qty-"+id);
+  let value = parseInt(el.textContent);
+  value += delta;
+  if(value < 0) value = 0;
+  el.textContent = value;
+
+  updateCart();
+}
+
+// 更新購物車
+function updateCart(){
+  cart = {};
+  let total = 0;
+
+  products.forEach(p=>{
+    let qty = parseInt(document.getElementById("qty-"+p.id).textContent);
+    if(qty>0){
+      cart[p.name] = qty;
+      total += qty * 880;
+    }
+  });
+
+  const el = document.getElementById("cart");
+  el.innerHTML="";
+
+  Object.keys(cart).forEach(name=>{
+    const li = document.createElement("li");
+    li.textContent = `${name} x ${cart[name]}`;
+    el.appendChild(li);
+  });
+
+  document.getElementById("total").textContent = "總金額 $" + total;
+}
+
+// 送出訂單
+function submitOrder(){
+  const name = document.getElementById("name").value;
+  const ig = document.getElementById("ig").value;
+
+  if(!name || !ig){
+    alert("請填寫完整資料");
+    return;
+  }
+
+  if(Object.keys(cart).length === 0){
+    alert("請選擇商品");
+    return;
+  }
+
+  db.collection("orders").add({
+    name,
+    ig,
+    cart,
+    status:"未出貨",
+    created:new Date()
+  });
+
+  alert("訂單已送出！");
+}
+
+// 查詢
+function searchOrder(){
+  const name = document.getElementById("searchName").value;
+
+  db.collection("orders")
+  .where("name","==",name)
+  .get()
+  .then(snapshot=>{
+    const el = document.getElementById("result");
+    el.innerHTML="";
+
+    snapshot.forEach(doc=>{
+      const d = doc.data();
+
+      const li = document.createElement("li");
+      li.textContent =
+        Object.entries(d.cart).map(i=>i[0]+"x"+i[1]).join(", ")
+        +"｜"+d.status;
+
+      el.appendChild(li);
+    });
+  });
+}
+
+// 即時團購數量
+function listenTotal(){
+  db.collection("orders").onSnapshot(snapshot=>{
+    let totals = {};
+
+    snapshot.forEach(doc=>{
+      const cart = doc.data().cart;
+      for(let key in cart){
+        totals[key] = (totals[key]||0) + cart[key];
+      }
+    });
+
+    products.forEach(p=>{
+      document.getElementById("total-"+p.id).textContent =
+        totals[p.name] || 0;
+    });
+  });
+}
+
+renderProducts();
+listenTotal();
+
+</script>
+
+</body>
+</html>
