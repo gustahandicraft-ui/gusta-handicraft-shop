@@ -1,13 +1,12 @@
 {\rtf1\ansi\ansicpg950\cocoartf2822
 \cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\fnil\fcharset136 PingFangTC-Regular;\f2\fnil\fcharset0 AppleColorEmoji;
-\f3\fnil\fcharset0 STIXTwoMath-Regular;\f4\fnil\fcharset0 Menlo-Regular;}
+}
 {\colortbl;\red255\green255\blue255;}
 {\*\expandedcolortbl;;}
 \paperw11900\paperh16840\margl1440\margr1440\vieww23580\viewh16380\viewkind0
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
 
 \f0\fs36 \cf0 <!DOCTYPE html>\
-\
 <html lang="zh-TW">\
 <head>\
 <meta charset="UTF-8">\
@@ -18,86 +17,86 @@
 \f0 </title>\
 \
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>\
-\
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>\
 \
 <style>\
-body\{\
-  font-family:"Helvetica",sans-serif;\
-  background:linear-gradient(#f8f3ed,#efe7dc);\
-  padding:20px;\
-  color:#5c4b3b;\
+body \{\
+  font-family: sans-serif;\
+  background: linear-gradient(#f8f3ed, #efe7dc);\
+  padding: 20px;\
 \}\
-h1\{font-weight:500;\}\
-.grid\{\
-  display:grid;\
-  grid-template-columns:repeat(auto-fill,minmax(160px,1fr));\
-  gap:12px;\
+\
+h1 \{ color:#5c4b3b; \}\
+\
+.grid \{\
+  display: grid;\
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));\
+  gap: 12px;\
 \}\
-.card\{\
-  background:white;\
-  border-radius:14px;\
-  overflow:hidden;\
-  box-shadow:0 4px 10px rgba(0,0,0,0.05);\
+\
+.card \{\
+  background: white;\
+  border-radius: 12px;\
+  padding:10px;\
 \}\
-.card img\{\
+\
+.count \{\
+  font-size:12px;\
+  color:#888;\
+\}\
+\
+input \{\
+  padding:6px;\
+  margin:6px 0;\
   width:100%;\
-  height:120px;\
-  object-fit:cover;\
 \}\
-.card .info\{padding:8px;\}\
-input\{padding:6px;border-radius:6px;border:1px solid #ccc;\}\
-button\{\
+\
+button \{\
   background:#d6bfa6;\
-  border:none;\
-  padding:8px 12px;\
-  border-radius:8px;\
   color:white;\
-  cursor:pointer;\
-\}\
-.cart\{\
-  margin-top:20px;\
-  background:white;\
-  padding:12px;\
-  border-radius:12px;\
-\}\
-#suggestions\{\
-  background:white;\
+  border:none;\
+  padding:10px;\
   border-radius:8px;\
-  margin-top:4px;\
+  width:100%;\
 \}\
-.totalBox\{\
+\
+.cart \{\
   margin-top:20px;\
   background:white;\
   padding:12px;\
   border-radius:12px;\
 \}\
 </style>\
-\
 </head>\
 \
 <body>\
 \
 <h1>
-\f2 \uc0\u55358 \u56822 
+\f2 \uc0\u55358 \u56821 
 \f0  gusta.handicraft</h1>\
-<p>Travel Yarn
+<p>Travel Yarn Lace
 \f1 \'a1\'55
-\f0 Lace 
-\f1 \'a8\'74\'a6\'43\'a1\'55
-\f0 $880 / 
-\f1 \'b5\'b1
-\f0 </p>\
+\f0 $880</p>\
 \
 <h3>
 \f2 \uc0\u55357 \u56420 
 \f0  
-\f1 \'bf\'ef\'be\'dc\'a7\'41\'aa\'ba\'bc\'ca\'ba\'d9
+\f1 \'b6\'f1\'bc\'67\'b8\'ea\'ae\'c6
 \f0 </h3>\
 <input id="name" placeholder="
-\f1 \'bf\'e9\'a4\'4a\'bc\'ca\'ba\'d9
+\f1 \'bd\'d0\'b6\'f1\'bc\'67
+\f0 LINE
+\f1 \'bc\'ca\'ba\'d9
 \f0 ">\
-<div id="suggestions"></div>\
+<input id="ig" placeholder="
+\f1 \'bd\'d0\'b6\'f1\'bc\'67
+\f0 IG
+\f1 \'b1\'62\'b8\'b9\'a1\'5d\'ad\'59\'a8\'cf\'a5\'ce
+\f0 LINE
+\f1 \'a5\'69\'b6\'f1
+\f0 LINE
+\f1 \'a6\'57\'ba\'d9\'a1\'5e
+\f0 ">\
 \
 <div class="grid" id="products"></div>\
 \
@@ -114,22 +113,15 @@ button\{\
 \f0 </button>\
 </div>\
 \
-<div class="totalBox">\
-<h3>
-\f2 \uc0\u55357 \u56613 
-\f0  
-\f1 \'b9\'ce\'c1\'ca\'b2\'d6\'bf\'6e\'bc\'c6\'b6\'71
-\f0 </h3>\
-<ul id="summary"></ul>\
-</div>\
-\
 <h3>
 \f2 \uc0\u55357 \u56550 
 \f0  
 \f1 \'ac\'64\'b8\'df\'ad\'71\'b3\'e6
 \f0 </h3>\
 <input id="searchName" placeholder="
-\f1 \'bf\'e9\'a4\'4a\'bc\'ca\'ba\'d9
+\f1 \'bf\'e9\'a4\'4a
+\f0 LINE
+\f1 \'bc\'ca\'ba\'d9
 \f0 ">\
 <button onclick="searchOrder()">
 \f1 \'ac\'64\'b8\'df
@@ -139,730 +131,138 @@ button\{\
 <script>\
 // 
 \f2 \uc0\u55357 \u56613 
-\f0  Firebase\
+\f0  Firebase
+\f1 \'a1\'5d\'b4\'ab\'a6\'a8\'a7\'41\'aa\'ba\'a1\'5e
+\f0 \
 const firebaseConfig = \{\
-  apiKey: "AIzaSyDm6qL6HhI_6nv0Uahrb6RqVFh0V7nI000",\
-  authDomain: "gusta-handicraft-91753.firebaseapp.com",\
-  projectId: "gusta-handicraft-91753"\
+  apiKey: "
+\f1 \'a7\'41\'aa\'ba
+\f0 key",\
+  authDomain: "
+\f1 \'a7\'41\'aa\'ba
+\f0 domain",\
+  projectId: "
+\f1 \'a7\'41\'aa\'ba
+\f0 project"\
 \};\
+\
 firebase.initializeApp(firebaseConfig);\
 const db = firebase.firestore();\
 \
 // 
-\f2 \uc0\u55358 \u56822 
-\f0  
 \f1 \'b0\'d3\'ab\'7e
 \f0 \
-const products=[\
-\{name:"001 London"\},\
-\{name:"002 Minneapolis"\},\
-\{name:"003 Praha"\},\
-\{name:"004 Bukchon"\},\
-\{name:"005 Toronto"\},\
-\{name:"006 Grampians"\},\
-\{name:"007 Washington DC"\},\
-\{name:"008 Zermatt"\},\
-\{name:"009 New Hampshire"\}\
+const products = [\
+"001 London",\
+"002 Minneapolis",\
+"003 Praha",\
+"004 Bukchon",\
+"005 Toronto",\
+"006 Grampians",\
+"007 Washington DC",\
+"008 Zermatt",\
+"009 New Hampshire"\
 ];\
 \
-// 
-\f2 \uc0\u55357 \u56420 
-\f0  
-\f1 \'a6\'57\'b3\'e6\'a1\'5d\'a5\'75\'c5\'e3\'a5\'dc\'b7\'6a\'b4\'4d\'b5\'b2\'aa\'47\'a1\'5e
-\f0 \
-const validUsers = [\
-"0132002351-
-\f1 \'c1\'fa\'a1\'5d
-\f0 shihi
-\f1 \'a1\'5e
-\f0 ",\
-"750Tao loves
-\f1 \'a1\'5d
-\f0 Taoloves
-\f1 \'a1\'5e
-\f0 ",\
-"A
-\f1 \'a1\'5d
-\f0 anita_10969
-\f1 \'a1\'5e
-\f0 ",\
-"AHA-
-\f1 \'a5\'78\'a5\'5f\'a1\'42\'a5\'78\'a4\'a4\'a1\'5d
-\f0 fritzi0209
-\f1 \'a1\'5e
-\f0 ",\
-"Ahcn
-\f1 \'a1\'5d
-\f0 nchawind
-\f1 \'a1\'5e
-\f0 ",\
-"Alis
-\f1 \'a1\'5d
-\f0 light_su
-\f1 \'a1\'5e
-\f0 ",\
-"Amber
-\f1 \'a1\'5d
-\f0 littledeer.tw
-\f1 \'a1\'5e
-\f0 ",\
-"AMBER LEE
-\f1 \'a1\'5d
-\f0 ina241092
-\f1 \'a1\'5e
-\f0 ",\
-"Anita
-\f1 \'a1\'5d
-\f0 yujauwun
-\f1 \'a1\'5e
-\f0 ",\
-"annnnn
-\f1 \'a1\'5d
-\f0 yian530
-\f1 \'a1\'5e
-\f0 ",\
-"Annyy
-\f1 \'a1\'5d
-\f0 cro.nini
-\f1 \'a1\'5e
-\f0 ",\
-"Ave
-\f1 \'a1\'5d
-\f0 ave_hsuan
-\f1 \'a1\'5e
-\f0 ",\
-"bamboo-
-\f1 \'a5\'78\'a5\'5f\'a1\'5d
-\f0 shien_041213
-\f1 \'a1\'5e
-\f0 ",\
-"BiBi
-\f1 \'a1\'5d
-\f0 rryu4y
-\f1 \'a1\'5e
-\f0 ",\
-"Carley
-\f1 \'a1\'5d
-\f0 iron1028
-\f1 \'a1\'5e
-\f0 ",\
-"Carol
-\f1 \'a1\'5d
-\f0 carolp532123
-\f1 \'a1\'5e
-\f0 ",\
-"Chang hhh
-\f1 \'b0\'aa\'b6\'af\'a1\'5d
-\f0 na1234577
-\f1 \'a1\'5e
-\f0 ",\
-"Charlie
-\f1 \'a1\'5d
-\f0 Nksugg
-\f1 \'a1\'5e
-\f0 ",\
-"Chen
-\f1 \'a1\'5d
-\f0 carencarenchen
-\f1 \'a1\'5e
-\f0 ",\
-"CHIEN 
-\f1 \'a5\'78\'a5\'5f\'a1\'5d
-\f0 junhuijian
-\f1 \'a1\'5e
-\f0 ",\
-"Chloe",\
-"Chuchuuu
-\f1 \'a1\'5d
-\f0 apple6865_aa
-\f1 \'a1\'5e
-\f0 ",\
-"Chun123
-\f1 \'a1\'5d\'a1\'5e
-\f0 ",\
-"ChunKK 
-\f1 \'b0\'aa\'b6\'af\'a1\'5d
-\f0 _chun_kuo
-\f1 \'a1\'5e
-\f0 ",\
-"Cih P
-\f1 \'a1\'5d
-\f0 ciihhhhh
-\f1 \'a1\'5e
-\f0 ",\
-"ee
-\f1 \'a1\'5d
-\f0 linshawba
-\f1 \'a1\'5e
-\f0 ",\
-"emilia 
-\f1 \'a5\'78\'a5\'5f
-\f0  
-\f1 \'a1\'5d
-\f0 windland1006
-\f1 \'a1\'5e
-\f0 ",\
-"Emma
-\f1 \'a1\'5d
-\f0 sun2705
-\f1 \'a1\'5e
-\f0 ",\
-"Eve T.
-\f1 \'a1\'5d
-\f0 eve_tsai_
-\f1 \'a1\'5e
-\f0 ",\
-"Feng
-\f1 \'a1\'5d
-\f0 error._.four
-\f1 \'a1\'5e
-\f0 ",\
-"fish 
-\f1 \'b7\'73\'a5\'5f\'a1\'5d
-\f0 peiyu.lan
-\f1 \'a1\'5e
-\f0 ",\
-"fish
-\f2 \uc0\u55357 \u56351 
-\f1 \'a1\'5d
-\f0 fish7674
-\f1 \'a1\'5e
-\f0 ",\
-"Fois
-\f1 \'a1\'5d
-\f0 hidemyselfdeeply
-\f1 \'a1\'5e
-\f0 ",\
-"Hana
-\f1 \'a1\'5d
-\f0 a771130355
-\f1 \'a1\'5e
-\f0 ",\
-"Huang
-\f1 \'a1\'5d
-\f0 xiu.yue.56
-\f1 \'a1\'5e
-\f0 ",\
-"Ida
-\f1 \'a1\'5d
-\f0 owo556655
-\f1 \'a1\'5e
-\f0 ",\
-"Iris 244
-\f1 \'a1\'5d
-\f0 zx51272000
-\f1 \'a1\'5e
-\f0 ",\
-"Ivy C.
-\f1 \'a1\'5d
-\f0 simplyture0125
-\f1 \'a1\'5e
-\f0 ",\
-"J
-\f1 \'a1\'5d
-\f0 boomoops
-\f1 \'a1\'5e
-\f0 ",\
-"J!NG @
-\f1 \'b0\'aa\'b6\'af\'a1\'5d
-\f0 ruya.xia_955
-\f1 \'a1\'5e
-\f0 ",\
-"Janet
-\f1 \'a1\'5d
-\f0 janet._.yci
-\f1 \'a1\'5e
-\f0 ",\
-"Jennis
-\f1 \'a1\'5d\'a1\'5e
-\f0 ",\
-"Jiffany
-\f1 \'a1\'5d
-\f0 flovec1224
-\f1 \'a1\'5e
-\f0 ",\
-"JJJ
-\f1 \'a1\'5d\'a1\'5e
-\f0 ",\
-"K.C
-\f1 \'a1\'5d
-\f0 chu232
-\f1 \'a1\'5e
-\f0 ",\
-"Kaya
-\f1 \'a1\'5d
-\f0 cindy000228
-\f1 \'a1\'5e
-\f0 ",\
-"Kim
-\f1 \'a1\'5d
-\f0 kc0118r
-\f1 \'a1\'5e
-\f0 ",\
-"KK-
-\f1 \'ae\'e7\'b6\'e9\'a1\'5d
-\f0 moocraft.momndau
-\f1 \'a1\'5e
-\f0 ",\
-"KYJ
-\f1 \'a1\'5d
-\f0 yi_jhen922
-\f1 \'a1\'5e
-\f0 ",\
-"Leah
-\f1 \'a1\'5d
-\f0 imsylvialih
-\f1 \'a1\'5e
-\f0 ",\
-"Li
-\f2 \uc0\u55358 \u56949 
-\f1 \'a1\'5d
-\f0 julibloodyjelly
-\f1 \'a1\'5e
-\f0 ",\
-"Lin
-\f1 \'b7\'73\'a5\'5f\'a1\'5d
-\f0 loewejenny
-\f1 \'a1\'5e
-\f0 ",\
-"Ling 
-\f1 \'aa\'e1\'bd\'ac\'a1\'5d
-\f0 zerozhen0828
-\f1 \'a1\'5e
-\f0 ",\
-"Livia
-\f1 \'a1\'5d
-\f0 qpbqpbqpbq
-\f1 \'a1\'5e
-\f0 ",\
-"Louisliu-
-\f1 \'a5\'78\'a5\'5f\'a1\'5d
-\f0 cowpoopoo
-\f1 \'a1\'5e
-\f0 ",\
-"Maggie
-\f1 \'a1\'5d
-\f0 laggy.su
-\f1 \'a1\'5e
-\f0 ",\
-"Mago
-\f1 \'a1\'5d
-\f0 jennyy_wow
-\f1 \'a1\'5e
-\f0 ",\
-"Mais
-\f1 \'a1\'5d
-\f0 yun_xi_lin
-\f1 \'a1\'5e
-\f0 ",\
-"Mandy Chen
-\f1 \'a1\'5d
-\f0 mandy_tsai_lien
-\f1 \'a1\'5e
-\f0 ",\
-"MARU
-\f1 \'a1\'5d
-\f0 immaruwong
-\f1 \'a1\'5e
-\f0 ",\
-"Meng
-\f1 \'a1\'5d
-\f0 man.man_yang
-\f1 \'a1\'5e
-\f0 ",\
-"Meng07
-\f1 \'a1\'5d
-\f0 sszzc1121
-\f1 \'a1\'5e
-\f0 ",\
-"Meowmeow/
-\f1 \'a5\'78\'a5\'5f\'a1\'5d
-\f0 Cestlavi_vi
-\f1 \'a1\'5e
-\f0 ",\
-"Mia880314
-\f1 \'a1\'5d
-\f0 Mia880314
-\f1 \'a1\'5e
-\f0 ",\
-"Mich
-\f1 \'a1\'5d
-\f0 michief.managed
-\f1 \'a1\'5e
-\f0 ",\
-"Mika Lin
-\f1 \'a1\'5d
-\f0 ovoqwpovo
-\f1 \'a1\'5e
-\f0 ",\
-"Miwawa
-\f2 \uc0\u55358 \u56822 
-\f1 \'a5\'78\'a4\'a4\'a1\'5d
-\f0 dabossbb
-\f1 \'a1\'5e
-\f0 ",\
-"molly
-\f1 \'a1\'5d
-\f0 monkey8-_83
-\f1 \'a1\'5e
-\f0 ",\
-"Molly
-\f3 \uc0\u7576 
-\f0  
-\f1 \uc0\u12484 
-\f4 \uc0\u7557 
-\f1 \'a1\'5d
-\f0 __loogll
-\f1 \'a1\'5e
-\f0 ",\
-"N
-\f1 \'a1\'5d
-\f0 lilian_1209
-\f1 \'a1\'5e
-\f0 ",\
-"Nancy Chang
-\f1 \'a1\'5d
-\f0 nancy_chang0129
-\f1 \'a1\'5e
-\f0 ",\
-"nemo
-\f1 \'a1\'5d
-\f0 yumam.c
-\f1 \'a1\'5e
-\f0 ",\
-"NEW
-\f1 \'a1\'5d
-\f0 1_newnew_1
-\f1 \'a1\'5e
-\f0 ",\
-"Peiwen
-\f1 \'ae\'e7\'b6\'e9\'a1\'5d
-\f0 pewen0701
-\f1 \'a1\'5e
-\f0 ",\
-"peiyun
-\f1 \'a1\'5d
-\f0 peiyun44
-\f1 \'a1\'5e
-\f0 ",\
-"PhoebeW
-\f1 \'a1\'5d
-\f0 phoebewu0725
-\f1 \'a1\'5e
-\f0 ",\
-"rachelguo
-\f1 \'a1\'5d
-\f0 rachelguo
-\f1 \'a1\'5e
-\f0 ",\
-"RCN
-\f1 \'a1\'5d
-\f0 wbb116119
-\f1 \'a1\'5e
-\f0 ",\
-"Rita
-\f1 \'a1\'5d
-\f0 vivadog
-\f1 \'a1\'5e
-\f0 ",\
-"Ruby
-\f1 \'a1\'5d
-\f0 ruby.ni
-\f1 \'a1\'5e
-\f0 ",\
-"rudydodo
-\f1 \'a1\'5d
-\f0 rudydodo29
-\f1 \'a1\'5e
-\f0 ",\
-"Rumii
-\f1 \'a1\'5d
-\f0 ru.h05
-\f1 \'a1\'5e
-\f0 ",\
-"
-\f1 \'a2\'e1\'a1\'5d
-\f0 yuchieh_0207
-\f1 \'a1\'5e
-\f0 ",\
-"Sapphire
-\f1 \'a1\'5d
-\f0 laihappydaily
-\f1 \'a1\'5e
-\f0 ",\
-"Selena
-\f1 \'a1\'5d
-\f0 selenaq0q
-\f1 \'a1\'5e
-\f0 ",\
-"Sharon
-\f1 \'a1\'47\'b2\'48\'a4\'f4\'a1\'5d
-\f0 vhsuan_0221
-\f1 \'a1\'5e
-\f0 ",\
-"Sheena
-\f1 \'a1\'5d
-\f0 sheena_nan03
-\f1 \'a1\'5e
-\f0 ",\
-"Siao
-\f1 \'a1\'5d
-\f0 alices.com.tw
-\f1 \'a1\'5e
-\f0 ",\
-"SST
-\f1 \'a1\'5d
-\f0 huang_ssi_ting
-\f1 \'a1\'5e
-\f0 ",\
-"Su-
-\f1 \'b7\'73\'a6\'cb\'a1\'5d\'a1\'5e
-\f0 ",\
-"Sumi
-\f1 \'a1\'5d
-\f0 szumingtsao
-\f1 \'a1\'5e
-\f0 ",\
-"SUN
-\f1 \'a1\'5d
-\f0 dragonfly___hung___
-\f1 \'a1\'5e
-\f0 ",\
-"sylvia
-\f1 \'a1\'5d
-\f0 ruying9224
-\f1 \'a1\'5e
-\f0 ",\
-"Sylviaaa 
-\f1 \'ae\'e7\'b6\'e9\'a1\'5d
-\f0 ssss.yii
-\f1 \'a1\'5e
-\f0 ",\
-"Sylvie 
-\f1 \'ae\'e7\'b6\'e9\'a5\'78\'a5\'5f\'a1\'5d\'a1\'5e
-\f0 ",\
-"Tanya
-\f1 \'a1\'5d
-\f0 ching.tu
-\f1 \'a1\'5e
-\f0 ",\
-"Tong-
-\f1 \'b9\'fc\'a4\'c6\'a1\'5d
-\f0 haitong_lin
-\f1 \'a1\'5e
-\f0 ",\
-"Trekkie
-\f1 \'a1\'5d
-\f0 Dlawldkxi
-\f1 \'a1\'5e
-\f0 ",\
-"Tzu-
-\f1 \'a5\'78\'a5\'5f\'a1\'5d
-\f0 ____ting
-\f1 \'a1\'5e
-\f0 ",\
-"U
-\f1 \'a1\'5d
-\f0 hsulalalala
-\f1 \'a1\'5e
-\f0 ",\
-"Una(Wen)0123
-\f1 \'a1\'5d
-\f0 unawen
-\f1 \'a1\'5e
-\f0 ",\
-"Viviana
-\f2 \uc0\u55356 \u57216 
-\f1 \'b7\'73\'a5\'5f\'a1\'5d
-\f0 viviana.612
-\f1 \'a1\'5e
-\f0 ",\
-"VivkyHh
-\f1 \'a1\'5d
-\f0 vicluvzcomics
-\f1 \'a1\'5e
-\f0 ",\
-"VV
-\f1 \'a1\'5d
-\f0 vagabondsix
-\f1 \'a1\'5e
-\f0 ",\
-"W
-\f1 \'a1\'5d\'a1\'5e
-\f0 ",\
-"Wei
-\f1 \'a5\'78\'a5\'5f\'a1\'5d
-\f0 tsaiwei1124
-\f1 \'a1\'5e
-\f0 ",\
-"Wen111
-\f1 \'a1\'5d
-\f0 key1403
-\f1 \'a1\'5e
-\f0 ",\
-"xax32580
-\f1 \'a1\'5d
-\f0 yanting0513
-\f1 \'a1\'5e
-\f0 ",\
-"YC
-\f1 \'a1\'5d
-\f0 lin_ching0830
-\f1 \'a1\'5e
-\f0 ",\
-"yehchunn
-\f1 \'a1\'5d
-\f0 yehchunn
-\f1 \'a1\'5e
-\f0 ",\
-"Yishuian Wu
-\f1 \'a1\'5d\'a1\'5e
-\f0 ",\
-"YLMNFST
-\f1 \'a1\'5d
-\f0 Yu.luotmnfstfm
-\f1 \'a1\'5e
-\f0 ",\
-"yt
-\f1 \'a1\'5d
-\f0 yt_zh
-\f1 \'a1\'5e
-\f0 ",\
-"ytl
-\f1 \'a1\'5d
-\f0 lighting0704
-\f1 \'a1\'5e
-\f0 ",\
-"Yu33 
-\f1 \'a5\'78\'a5\'5f\'a1\'5d
-\f0 yu_shan__0216
-\f1 \'a1\'5e
-\f0 ",\
-"Yuan
-\f1 \'a1\'5d
-\f0 dietitian_yuan
-\f1 \'a1\'5e
-\f0 ",\
-"yun
-\f1 \'a1\'5d
-\f0 liuxuanyun1616
-\f1 \'a1\'5e
-\f0 ",\
-"YW
-\f1 \'a1\'5d
-\f0 wenwen5425
-\f1 \'a1\'5e
-\f0 ",\
-"Z
-\f1 \'a1\'5d
-\f0 zoechang69
-\f1 \'a1\'5e
-\f0 ",\
-"Zoe
-\f1 \'a1\'5d
-\f0 zoelee1014
-\f1 \'a1\'5e
-\f0 ",\
-"Zoeyyy-
-\f1 \'c2\'f9\'a5\'5f\'a1\'5d
-\f0 iamwuzo
-\f1 \'a1\'5e
-\f0 "\
-];\
+let cart = [];\
 \
 // 
-\f2 \uc0\u55357 \u56589 
-\f0  
-\f1 \'b7\'6a\'b4\'4d
+\f1 \'b4\'e8\'ac\'56\'b0\'d3\'ab\'7e
 \f0 \
-const input=document.getElementById("name");\
-const box=document.getElementById("suggestions");\
-\
-input.addEventListener("input",function()\{\
-  const keyword=this.value.toLowerCase();\
-  box.innerHTML="";\
-  if(keyword.length<1)return;\
-\
-  validUsers\
-  .filter(n=>n.toLowerCase().includes(keyword))\
-  .slice(0,10)\
-  .forEach(n=>\{\
-    const div=document.createElement("div");\
-    div.textContent=n;\
-    div.onclick=()=>\{\
-      input.value=n;\
-      box.innerHTML="";\
-    \};\
-    box.appendChild(div);\
-  \});\
-\});\
-\
-// 
-\f2 \uc0\u55358 \u56822 
-\f0  render
-\f1 \'b0\'d3\'ab\'7e
-\f0 \
-let cart=[];\
-\
 function renderProducts()\{\
-  const el=document.getElementById("products");\
-  products.forEach(p=>\{\
-    const div=document.createElement("div");\
+  const el = document.getElementById("products");\
+\
+  products.forEach(name=>\{\
+    const div = document.createElement("div");\
     div.className="card";\
+\
     div.innerHTML=`\
-      <div class="info">\
-      <b>$\{p.name\}</b><br>\
-      <input type="number" min="0" value="0" id="$\{p.name\}">\
-      </div>`;\
+      <b>$\{name\}</b><br>\
+      <div class="count" id="count-$\{name\}">
+\f1 \'b8\'fc\'a4\'4a\'a4\'a4
+\f0 ...</div>\
+      
+\f1 \'bc\'c6\'b6\'71
+\f0  <input type="number" min="0" value="0" id="$\{name\}">\
+    `;\
+\
     el.appendChild(div);\
   \});\
 \}\
 \
 // 
-\f2 \uc0\u55357 \u57042 
-\f0  
-\f1 \'a7\'f3\'b7\'73\'c1\'ca\'aa\'ab\'a8\'ae
+\f1 \'a7\'59\'ae\'c9\'b2\'ce\'ad\'70
+\f2 \uc0\u55357 \u56613 
+\f0 \
+function loadCounts()\{\
+  let totals = \{\};\
+\
+  products.forEach(p=> totals[p]=0);\
+\
+  db.collection("orders").get().then(snapshot=>\{\
+    snapshot.forEach(doc=>\{\
+      const data = doc.data();\
+      data.cart.forEach(item=>\{\
+        totals[item.name] += Number(item.qty);\
+      \});\
+    \});\
+\
+    products.forEach(p=>\{\
+      const el = document.getElementById("count-"+p);\
+      if(el)\{\
+        el.textContent = "
+\f1 \'a5\'d8\'ab\'65\'b9\'ce\'c1\'ca\'bc\'c6\'b6\'71\'a1\'47
+\f0 " + totals[p];\
+      \}\
+    \});\
+  \});\
+\}\
+\
+// 
+\f1 \'c1\'ca\'aa\'ab\'a8\'ae
 \f0 \
 function updateCart()\{\
-  cart=[];\
-  let total=0;\
+  cart = [];\
+  let total = 0;\
 \
   products.forEach(p=>\{\
-    let qty=Number(document.getElementById(p.name).value);\
+    let qty = document.getElementById(p).value;\
     if(qty>0)\{\
-      cart.push(\{name:p.name,qty\});\
-      total+=qty*880;\
+      cart.push(\{name:p, qty\});\
+      total += qty * 880;\
     \}\
   \});\
 \
-  const el=document.getElementById("cart");\
+  const el = document.getElementById("cart");\
   el.innerHTML="";\
+\
   cart.forEach(i=>\{\
-    const li=document.createElement("li");\
-    li.textContent=i.name+" x "+i.qty;\
+    const li = document.createElement("li");\
+    li.textContent = `$\{i.name\} x $\{i.qty\}`;\
     el.appendChild(li);\
   \});\
 \
-  document.getElementById("total").textContent="
+  document.getElementById("total").textContent = "
 \f1 \'c1\'60\'aa\'f7\'c3\'42
-\f0  $"+total;\
+\f0  $" + total;\
 \}\
-setInterval(updateCart,800);\
+\
+setInterval(updateCart,1000);\
 \
 // 
-\f2 \uc0\u55357 \u56960 
-\f0  
 \f1 \'b0\'65\'a5\'58\'ad\'71\'b3\'e6
 \f0 \
 function submitOrder()\{\
-  const name=input.value;\
+  const name = document.getElementById("name").value;\
+  const ig = document.getElementById("ig").value;\
 \
-  if(!validUsers.includes(name))\{\
+  if(!name || !ig)\{\
     alert("
-\f1 \'bd\'d0\'b1\'71\'a6\'57\'b3\'e6\'bf\'ef\'be\'dc\'bc\'ca\'ba\'d9
-\f0 ");\
+\f1 \'bd\'d0\'b6\'f1\'bc\'67\'bc\'ca\'ba\'d9\'bb\'50
+\f0 IG/LINE");\
     return;\
   \}\
+\
   if(cart.length===0)\{\
     alert("
 \f1 \'bd\'d0\'bf\'ef\'b0\'d3\'ab\'7e
@@ -872,69 +272,56 @@ function submitOrder()\{\
 \
   db.collection("orders").add(\{\
     name,\
+    ig,\
     cart,\
+    status:"
+\f1 \'a5\'bc\'a5\'58\'b3\'66
+\f0 ",\
     created:new Date()\
-  \});\
-\
-  alert("
+  \}).then(()=>\{\
+    alert("
 \f1 \'ad\'71\'b3\'e6\'a4\'77\'b0\'65\'a5\'58\'a1\'49
 \f0 ");\
+    loadCounts(); // 
+\f1 \'a7\'f3\'b7\'73\'bc\'c6\'b6\'71
+\f0 \
+  \});\
 \}\
 \
 // 
-\f2 \uc0\u55357 \u56589 
-\f0  
-\f1 \'ac\'64\'b8\'df\'ad\'71\'b3\'e6
+\f1 \'ac\'64\'b8\'df
 \f0 \
 function searchOrder()\{\
-  const name=document.getElementById("searchName").value;\
-  db.collection("orders").where("name","==",name).get()\
+  const name = document.getElementById("searchName").value;\
+\
+  db.collection("orders")\
+  .where("name","==",name)\
+  .get()\
   .then(snapshot=>\{\
-    const el=document.getElementById("result");\
+    const el = document.getElementById("result");\
     el.innerHTML="";\
+\
     snapshot.forEach(doc=>\{\
-      const d=doc.data();\
-      const li=document.createElement("li");\
-      li.textContent=d.cart.map(i=>i.name+"x"+i.qty).join(", ");\
+      const d = doc.data();\
+\
+      const li = document.createElement("li");\
+      li.textContent =\
+        d.cart.map(i=>i.name+"x"+i.qty).join(", ") +\
+        "
+\f1 \'a1\'55
+\f0 "+d.status;\
+\
       el.appendChild(li);\
     \});\
   \});\
 \}\
 \
 // 
-\f2 \uc0\u55357 \u56613 
-\f0  
-\f1 \'a7\'59\'ae\'c9\'b2\'d6\'ad\'70
+\f1 \'aa\'ec\'a9\'6c\'a4\'c6
 \f0 \
-function loadSummary()\{\
-  db.collection("orders").onSnapshot(snapshot=>\{\
-    let totalMap=\{\};\
-\
-    snapshot.forEach(doc=>\{\
-      doc.data().cart.forEach(i=>\{\
-        totalMap[i.name]=(totalMap[i.name]||0)+i.qty;\
-      \});\
-    \});\
-\
-    const el=document.getElementById("summary");\
-    el.innerHTML="";\
-\
-    Object.keys(totalMap).forEach(name=>\{\
-      const li=document.createElement("li");\
-      li.textContent=`$\{name\}
-\f1 \'a1\'47
-\f0 $\{totalMap[name]\} 
-\f1 \'b5\'b1
-\f0 `;\
-      el.appendChild(li);\
-    \});\
-  \});\
-\}\
-\
 renderProducts();\
-loadSummary();\
+loadCounts();\
 </script>\
 \
 </body>\
-</html>\
-}
+</html>}
