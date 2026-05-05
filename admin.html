@@ -1,1 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<title>gusta.handicraft｜後台管理</title>
 
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+<style>
+body {
+  font-family: "Helvetica";
+  background: #f8f3ed;
+  padding: 20px;
+  color: #5c4b3b;
+}
+
+h1 {
+  margin-bottom: 10px;
+}
+
+.card {
+  background: white;
+  padding: 12px;
+  border-radius: 12px;
+  margin-bottom: 10px;
+}
+
+button {
+  padding: 6px 10px;
+  border: none;
+  border-radius: 8px;
+  background: #d6bfa6;
+  color: white;
+  cursor: pointer;
+}
+
+.stats {
+  background: white;
+  padding: 12px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🧵 gusta.handicraft｜訂單後台</h1>
+
+<div class="stats">
+  <h3>📊 團購統計</h3>
+  <p id="totalOrders">訂單數：0</p>
+  <ul id="productStats"></ul>
+</div>
+
+<div id="orders"></div>
+
+<script>
+
+// 🔥 Firebase（填你的）
+const firebaseConfig = {
+  apiKey: "AIzaSyDm6qL6HhI_6nv0Uahrb6RqVFh0V7nI000",
+  authDomain: "gusta-handicraft-91753.firebaseapp.com",
+  projectId: "gusta-handicraft-91753"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+// 即時監聽訂單
+db.collection("orders").orderBy("created","desc")
+.onSnapshot(snapshot => {
+
+  const container = document.getElementById("orders");
+  const statsEl = document.getElementById("productStats");
+
+  container.innerHTML = "";
+  statsEl.innerHTML = "";
+
+  let totalOrders = 0;
+  let productStats = {};
+
+  snapshot.forEach(doc => {
+    totalOrders++;
+
+    const d = doc.data();
+
+    // 統計商品
+    for (let key in d.cart) {
+      productStats[key] = (productStats[key] || 0) + d.cart[key];
+    }
+
+    const div = document.createElement("div");
+    div.className = "card";
+
+    div.innerHTML = `
+      <b>${d.name}</b>（${d.ig}）<br>
+      🧶 ${Object.entries(d.cart).map(i=>i[0]+" x "+i[1]).join(", ")}<br>
+      📦 狀態：${d.status}<br>
+      🕒 ${new Date(d.created.seconds * 1000).toLocaleString()}<br><br>
+      <button onclick="updateStatus('${doc.id}', '已出貨')">標記已出貨</button>
+      <button onclick="updateStatus('${doc.id}', '已完成')">標記完成</button>
+    `;
+
+    container.appendChild(div);
+  });
+
+  // 更新統計
+  document.getElementById("totalOrders").textContent =
+    "訂單數：" + totalOrders;
+
+  Object.keys(productStats).forEach(name=>{
+    const li = document.createElement("li");
+    li.textContent = `${name}：${productStats[name]} 顆`;
+    statsEl.appendChild(li);
+  });
+
+});
+
+// 更新狀態
+function updateStatus(id, status){
+  db.collection("orders").doc(id).update({
+    status: status
+  });
+}
+
+</script>
+
+</body>
+</html>
