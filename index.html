@@ -1,269 +1,41 @@
-<!DOCTYPE html>
-<html lang="zh-TW">
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
 <head>
-<meta charset="UTF-8">
-<title>gusta.handicraft｜Travel Yarn 團購</title>
-
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-
-<style>
-body {
-  font-family: "Helvetica", sans-serif;
-  background: linear-gradient(#f8f3ed, #efe7dc);
-  padding: 20px;
-  color: #5c4b3b;
-}
-
-h1 {
-  font-weight: 500;
-}
-
-input {
-  width: 100%;
-  padding: 10px;
-  margin: 6px 0;
-  border-radius: 10px;
-  border: 1px solid #e5d5c3;
-  background: #fffaf5;
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  gap: 12px;
-}
-
-.card {
-  background: white;
-  border-radius: 14px;
-  padding: 10px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-}
-
-.qty {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  margin-top: 8px;
-}
-
-.qty button {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  border: none;
-  background: #d6bfa6;
-  color: white;
-  cursor: pointer;
-}
-
-.qty span {
-  min-width: 20px;
-  text-align: center;
-}
-
-button.submit {
-  width: 100%;
-  padding: 12px;
-  border: none;
-  border-radius: 12px;
-  background: #cbb59b;
-  color: white;
-  margin-top: 10px;
-  cursor: pointer;
-}
-
-.cart {
-  margin-top: 20px;
-  background: white;
-  padding: 12px;
-  border-radius: 12px;
-}
-</style>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title></title>
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="2575.7">
+  <style type="text/css">
+    p.p2 {margin: 0.0px 0.0px 12.0px 0.0px; font: 12.0px 'PingFang TC'; -webkit-text-stroke: #000000}
+    p.p5 {margin: 0.0px 0.0px 12.0px 0.0px; font: 12.0px 'PingFang TC'; -webkit-text-stroke: #000000; min-height: 17.0px}
+    p.p6 {margin: 0.0px 0.0px 0.0px 0.0px; font: 11.0px 'PingFang TC'; color: #ffffff; -webkit-text-stroke: #ffffff; background-color: #ccb295}
+    p.p7 {margin: 0.0px 0.0px 0.0px 0.0px; font: 11.0px 'PingFang TC'; color: #ffffff; -webkit-text-stroke: #ffffff}
+    p.p8 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px 'PingFang TC'; -webkit-text-stroke: #000000; min-height: 17.0px}
+    li.li4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px 'PingFang TC'}
+    span.s1 {font: 24.0px 'Apple Color Emoji'; font-kerning: none}
+    span.s2 {font: 24.0px 'PingFang TC'; font-kerning: none}
+    span.s3 {font-kerning: none}
+    span.s4 {font: 14.0px 'Apple Color Emoji'; font-kerning: none}
+    span.s5 {font: 14.0px 'PingFang TC'; font-kerning: none}
+    span.s6 {font: 14.0px 'Apple Color Emoji'; font-kerning: none; background-color: #ffffff}
+    span.s7 {font: 14.0px 'PingFang TC'; font-kerning: none; background-color: #ffffff}
+    span.s8 {font-kerning: none; background-color: #ccb295}
+    ul.ul1 {list-style-type: disc}
+  </style>
 </head>
-
 <body>
-
-<h1>🧵 gusta.handicraft</h1>
-<p>Travel Yarn Lace｜$880</p>
-
-<h3>👤 填寫資料</h3>
-<input id="name" placeholder="請填寫LINE社群完整暱稱">
-<input id="ig" placeholder="請填寫IG帳號（若使用LINE可填LINE名稱）">
-
-<div class="grid" id="products"></div>
-
-<div class="cart">
-<h3>🛒 購物車</h3>
-<ul id="cart"></ul>
-<p id="total">總金額 $0</p>
-<button class="submit" onclick="submitOrder()">送出訂單</button>
-</div>
-
-<h3>📦 查詢訂單</h3>
-<input id="searchName" placeholder="輸入LINE暱稱">
-<button class="submit" onclick="searchOrder()">查詢</button>
-<ul id="result"></ul>
-
-<script>
-
-const firebaseConfig = {
-  apiKey: "AIzaSyDm6qL6HhI_6nv0Uahrb6RqVFh0V7nI000",
-  authDomain: "gusta-handicraft-91753.firebaseapp.com",
-  projectId: "gusta-handicraft-91753"
-};
-
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-
-// 商品
-const products = [
-{ id:"001_London", name:"001 London" },
-{ id:"002_Minneapolis", name:"002 Minneapolis" },
-{ id:"003_Praha", name:"003 Praha" },
-{ id:"004_Bukchon", name:"004 Bukchon" },
-{ id:"005_Toronto", name:"005 Toronto" },
-{ id:"006_Grampians", name:"006 Grampians" },
-{ id:"007_DC", name:"007 Washington DC" },
-{ id:"008_Zermatt", name:"008 Zermatt" },
-{ id:"009_NH", name:"009 New Hampshire" }
-];
-
-let cart = {};
-
-// 渲染商品
-function renderProducts(){
-  const el = document.getElementById("products");
-
-  products.forEach(p=>{
-    const div = document.createElement("div");
-    div.className="card";
-
-    div.innerHTML=`
-      <b>${p.name}</b>
-      <div>目前團購數量：<span id="total-${p.id}">0</span></div>
-      <div class="qty">
-        <button onclick="changeQty('${p.id}', -1)">－</button>
-        <span id="qty-${p.id}">0</span>
-        <button onclick="changeQty('${p.id}', 1)">＋</button>
-      </div>
-    `;
-
-    el.appendChild(div);
-  });
-}
-
-// +- 按鈕
-function changeQty(id, delta){
-  const el = document.getElementById("qty-"+id);
-  let value = parseInt(el.textContent);
-  value += delta;
-  if(value < 0) value = 0;
-  el.textContent = value;
-
-  updateCart();
-}
-
-// 更新購物車
-function updateCart(){
-  cart = {};
-  let total = 0;
-
-  products.forEach(p=>{
-    let qty = parseInt(document.getElementById("qty-"+p.id).textContent);
-    if(qty>0){
-      cart[p.name] = qty;
-      total += qty * 880;
-    }
-  });
-
-  const el = document.getElementById("cart");
-  el.innerHTML="";
-
-  Object.keys(cart).forEach(name=>{
-    const li = document.createElement("li");
-    li.textContent = `${name} x ${cart[name]}`;
-    el.appendChild(li);
-  });
-
-  document.getElementById("total").textContent = "總金額 $" + total;
-}
-
-// 送出訂單
-function submitOrder(){
-  const name = document.getElementById("name").value;
-  const ig = document.getElementById("ig").value;
-
-  if(!name || !ig){
-    alert("請填寫完整資料");
-    return;
-  }
-
-  if(Object.keys(cart).length === 0){
-    alert("請選擇商品");
-    return;
-  }
-
-  db.collection("orders").add({
-    name,
-    ig,
-    cart,
-    status:"未出貨",
-    created:new Date()
-  });
-
-  alert("訂單已送出！");
-}
-
-// 查詢
-function searchOrder(){
-  const name = document.getElementById("searchName").value;
-
-  db.collection("orders")
-  .where("name","==",name)
-  .get()
-  .then(snapshot=>{
-    const el = document.getElementById("result");
-    el.innerHTML="";
-
-    snapshot.forEach(doc=>{
-      const d = doc.data();
-
-      const li = document.createElement("li");
-      li.textContent =
-        Object.entries(d.cart).map(i=>i[0]+"x"+i[1]).join(", ")
-        +"｜"+d.status;
-
-      el.appendChild(li);
-    });
-  });
-}
-
-// 即時團購數量
-function listenTotal(){
-  db.collection("orders").onSnapshot(snapshot=>{
-    let totals = {};
-
-    snapshot.forEach(doc=>{
-      const cart = doc.data().cart;
-      for(let key in cart){
-        totals[key] = (totals[key]||0) + cart[key];
-      }
-    });
-
-    products.forEach(p=>{
-      document.getElementById("total-"+p.id).textContent =
-        totals[p.name] || 0;
-    });
-  });
-}
-
-renderProducts();
-listenTotal();
-
-</script>
-
+<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'PingFang TC Semibold'; color: #493a2d; -webkit-text-stroke: #493a2d"><span class="s1">🧵</span><span class="s2"><b> gusta.handicraft</b></span></h1>
+<p class="p2"><span class="s3">Travel Yarn Lace｜$880</span></p>
+<h3 style="margin: 0.0px 0.0px 14.0px 0.0px; font: 14.0px 'PingFang TC Semibold'; -webkit-text-stroke: #000000"><span class="s4">👤</span><span class="s5"><b> 填寫資料</b></span></h3>
+<h3 style="margin: 0.0px 0.0px 14.0px 0.0px; font: 14.0px 'PingFang TC Semibold'; -webkit-text-stroke: #000000"><span class="s6">🛒</span><span class="s7"><b> 購物車</b><b></b></span></h3>
+<ul class="ul1">
+  <li class="li4"></li>
+</ul>
+<p class="p5"><span class="s3"></span><br></p>
+<p class="p6"><span class="s3">送出訂單</span></p>
+<h3 style="margin: 0.0px 0.0px 14.0px 0.0px; font: 14.0px 'PingFang TC Semibold'; -webkit-text-stroke: #000000"><span class="s4">📦</span><span class="s5"><b> 查詢訂單</b></span></h3>
+<p class="p7"><span class="s8">查詢</span></p>
+<p class="p8"><span class="s3"></span><br></p>
 </body>
 </html>
