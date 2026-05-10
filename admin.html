@@ -44,17 +44,17 @@ button {
 </style>
 </head>
 
-<body>
-
+<body onload="checkPassword()">
 <h1>🧵 gusta.handicraft｜訂單後台</h1>
 
 <div class="stats">
+<button onclick="exportCSV()">匯出訂單 CSV</button>
   <h3>📊 團購統計</h3>
   <p id="totalOrders">訂單數：0</p>
   <ul id="productStats"></ul>
 </div>
 
-<div id="orders"></div>
+
 
 <script>
 
@@ -124,8 +124,77 @@ function updateStatus(id, status){
     status: status
   });
 }
+// 📊 匯出CSV
+function exportCSV(){
 
+  db.collection("orders").get().then(snapshot=>{
+
+    let csv = [];
+
+    // 標題列
+    csv.push([
+      "姓名",
+      "IG",
+      "商品",
+      "數量",
+      "狀態",
+      "時間"
+    ]);
+
+    snapshot.forEach(doc=>{
+
+      const d = doc.data();
+
+      Object.entries(d.cart).forEach(item=>{
+
+        csv.push([
+          d.name,
+          d.ig,
+          item[0],
+          item[1],
+          d.status,
+          new Date(d.created.seconds * 1000).toLocaleString()
+        ]);
+
+      });
+
+    });
+
+    // 轉CSV
+    const csvContent =
+      "\uFEFF" +
+      csv.map(e => e.join(",")).join("\n");
+
+    const blob = new Blob(
+      [csvContent],
+      { type: "text/csv;charset=utf-8;" }
+    );
+
+    const link = document.createElement("a");
+
+    link.href = URL.createObjectURL(blob);
+
+    link.download = "gusta_orders.csv";
+
+    link.click();
+
+  });
+
+}
+// 🔒 後台密碼
+function checkPassword(){
+
+  const password = prompt("請輸入後台密碼");
+
+  // 👉 改成你自己的密碼
+  const adminPassword = "gusta6633";
+
+  if(password !== adminPassword){
+    alert("密碼錯誤");
+    document.body.innerHTML = "";
+  }
+}
 </script>
 
-</body>
+<body>
 </html>
