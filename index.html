@@ -1,41 +1,471 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
+<!DOCTYPE html>
+<html lang="zh-TW">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <meta http-equiv="Content-Style-Type" content="text/css">
-  <title></title>
-  <meta name="Generator" content="Cocoa HTML Writer">
-  <meta name="CocoaVersion" content="2575.7">
-  <style type="text/css">
-    p.p2 {margin: 0.0px 0.0px 12.0px 0.0px; font: 12.0px 'PingFang TC'; -webkit-text-stroke: #000000}
-    p.p5 {margin: 0.0px 0.0px 12.0px 0.0px; font: 12.0px 'PingFang TC'; -webkit-text-stroke: #000000; min-height: 17.0px}
-    p.p6 {margin: 0.0px 0.0px 0.0px 0.0px; font: 11.0px 'PingFang TC'; color: #ffffff; -webkit-text-stroke: #ffffff; background-color: #ccb295}
-    p.p7 {margin: 0.0px 0.0px 0.0px 0.0px; font: 11.0px 'PingFang TC'; color: #ffffff; -webkit-text-stroke: #ffffff}
-    p.p8 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px 'PingFang TC'; -webkit-text-stroke: #000000; min-height: 17.0px}
-    li.li4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px 'PingFang TC'}
-    span.s1 {font: 24.0px 'Apple Color Emoji'; font-kerning: none}
-    span.s2 {font: 24.0px 'PingFang TC'; font-kerning: none}
-    span.s3 {font-kerning: none}
-    span.s4 {font: 14.0px 'Apple Color Emoji'; font-kerning: none}
-    span.s5 {font: 14.0px 'PingFang TC'; font-kerning: none}
-    span.s6 {font: 14.0px 'Apple Color Emoji'; font-kerning: none; background-color: #ffffff}
-    span.s7 {font: 14.0px 'PingFang TC'; font-kerning: none; background-color: #ffffff}
-    span.s8 {font-kerning: none; background-color: #ccb295}
-    ul.ul1 {list-style-type: disc}
-  </style>
+<meta charset="UTF-8">
+<title>gusta.handicraft｜Travel Yarn 團購</title>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+<style>
+body {
+  font-family: "Helvetica", sans-serif;
+  background: linear-gradient(#f8f3ed, #efe7dc);
+  padding: 20px;
+  color: #5c4b3b;
+}
+
+h1 {
+  font-weight: 500;
+  font-size:24px;
+}
+
+h2 {
+  font-weight: 400;
+  font-size:12px;
+  gap: 10px;
+}
+
+h4 {
+  font-weight: 400;
+  font-size:9px;
+  width: 50%;
+  padding: 10px;
+  margin: 6px 0;
+  border-radius: 10px;
+  border: 1px solid #e5d5c3;
+  background: #fffaf5;
+}
+
+input {
+  width: 50%;
+  padding: 10px;
+  margin: 6px 0;
+  border-radius: 10px;
+  border: 1px solid #e5d5c3;
+  background: #fffaf5;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 12px;
+
+}
+
+.card {
+  background: white;
+  border-radius: 14px;
+  padding: 10px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+.qty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.qty button {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  background: #d6bfa6;
+  color: white;
+  cursor: pointer;
+}
+
+.qty span {
+  min-width: 20px;
+  text-align: center;
+}
+
+button.submit {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 12px;
+  background: #cbb59b;
+  color: white;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+.cart {
+  margin-top: 20px;
+  background: white;
+  padding: 12px;
+  border-radius: 12px;
+}
+.product-name{
+  font-weight:600;
+  font-size:16px;
+  margin-bottom:8px;
+}
+
+.group-box{
+  font-size:13px;
+  color:#777;
+  margin-bottom:6px;
+}
+
+.group-status{
+  font-size:13px;
+  font-weight:600;
+  margin-bottom:10px;
+}
+
+.qty{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.qty-btn{
+  width:28px;
+  height:28px;
+  border:none;
+  border-radius:999px;
+  background:#e7d7c7;
+  color:#5c4b3b;
+  font-size:18px;
+  cursor:pointer;
+}
+
+.qty-number{
+  min-width:20px;
+  text-align:center;
+  font-weight:600;
+}
+.group-status{
+  margin-top:8px;
+  font-size:13px;
+  font-weight:600;
+}
+</style>
 </head>
+
 <body>
-<h1 style="margin: 0.0px 0.0px 16.1px 0.0px; font: 24.0px 'PingFang TC Semibold'; color: #493a2d; -webkit-text-stroke: #493a2d"><span class="s1">🧵</span><span class="s2"><b> gusta.handicraft</b></span></h1>
-<p class="p2"><span class="s3">Travel Yarn Lace｜$880</span></p>
-<h3 style="margin: 0.0px 0.0px 14.0px 0.0px; font: 14.0px 'PingFang TC Semibold'; -webkit-text-stroke: #000000"><span class="s4">👤</span><span class="s5"><b> 填寫資料</b></span></h3>
-<h3 style="margin: 0.0px 0.0px 14.0px 0.0px; font: 14.0px 'PingFang TC Semibold'; -webkit-text-stroke: #000000"><span class="s6">🛒</span><span class="s7"><b> 購物車</b><b></b></span></h3>
-<ul class="ul1">
-  <li class="li4"></li>
-</ul>
-<p class="p5"><span class="s3"></span><br></p>
-<p class="p6"><span class="s3">送出訂單</span></p>
-<h3 style="margin: 0.0px 0.0px 14.0px 0.0px; font: 14.0px 'PingFang TC Semibold'; -webkit-text-stroke: #000000"><span class="s4">📦</span><span class="s5"><b> 查詢訂單</b></span></h3>
-<p class="p7"><span class="s8">查詢</span></p>
-<p class="p8"><span class="s3"></span><br></p>
+
+<h1>🧵 gusta.handicraft</h1>
+<p>Travel Yarn Lace｜$880</p>
+<h3 id="countdown"></h3>
+<h2>年初熱銷好評再加開！來自韓國 @travel_yarn 的手染線<p>
+<p>將旅行途中看見的風景與色彩， 一點一滴染進毛線裡。 每一顆都是獨一無二的風景收藏 ✨<p>
+
+<p>團購規則：單一規格顏色需達到６絞即能成團，若是已成團該款商品上會顯示已成團，若無則顯示等待更多旅伴一起成團❤️<p>
+<p>一預購需知一<p>
+<p>• 預購日期05/12~05/18<p>
+<p>• 收單後需等候設計師手染製作，需等候21-30個工作日不等，若欲連續假期則往後順延。<p>
+<p>• 請各位下單若是可以留下方便聯絡的方式，如果有缺色或者問題才能夠找到人～<p>
+<p>• 手染線為訂製商品除重大瑕疵外不接受退換貨唷～詳細請參考購買及退換貨政策<p>
+<p>• 下單後即無法取消訂單，請確認好所需之數量以及顏色，並確認有付款成功訂單才算成立唷<p>
+<p>•有關任何訂單問題請至官方LINE@詢問<p>
+
+</p>
+</p>
+<h4>。+’"'gusta"在西班牙文中為「喜歡」之意，gusta.handicraft 是一個以手作為出發點的品牌<p>
+<p>想把自己的喜歡也跟同樣喜歡的人們分享.'！希望你們會喜歡我的喜歡<p>
+<p>品牌在2025年初成為韓國Yarn-a毛線品牌的台灣小小代理.謝謝大家的支持與喜歡，也非常歡迎大家後續追蹤 @@gusta.handicraft 以及@Yarn-a.tw，也十分歡迎大家分享作品標記我們～<p>
+
+<h3>👤 填寫資料</h3>
+<input id="name" placeholder="請填寫LINE社群完整暱稱">
+<input id="ig" placeholder="請填寫IG帳號（若使用LINE可填LINE名稱）">
+
+<div class="grid" id="products"></div>
+
+<div class="cart">
+<h3>🛒 購物車</h3>
+<ul id="cart"></ul>
+<p id="total">總金額 $0</p>
+<button class="submit" onclick="submitOrder()">送出訂單</button>
+</div>
+
+<h3>📦 查詢訂單</h3>
+<input id="searchName" placeholder="輸入LINE暱稱">
+<button class="submit" onclick="searchOrder()">查詢</button>
+<ul id="result"></ul>
+
+<script>
+
+// 🔥 Firebase（填你的）
+const firebaseConfig = {
+  apiKey: "AIzaSyDm6qL6HhI_6nv0Uahrb6RqVFh0V7nI000",
+  authDomain: "gusta-handicraft-91753.firebaseapp.com",
+  projectId: "gusta-handicraft-91753"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+// 商品
+const products = [
+{ id:"001_London", name:"001 London" },
+{ id:"002_Minneapolis", name:"002 Minneapolis" },
+{ id:"003_Praha", name:"003 Praha" },
+{ id:"004_Bukchon", name:"004 Bukchon" },
+{ id:"005_Toronto", name:"005 Toronto" },
+{ id:"006_Grampians", name:"006 Grampians" },
+{ id:"007_DC", name:"007 Washington DC" },
+{ id:"008_Zermatt", name:"008 Zermatt" },
+{ id:"009_NH", name:"009 New Hampshire" }
+];
+
+let cart = {};
+
+// 渲染商品
+function renderProducts(){
+  const el = document.getElementById("products");
+
+  products.forEach(p=>{
+    const div = document.createElement("div");
+    div.className="card";
+
+div.innerHTML=`
+
+  <div class="product-name">
+    ${p.name}
+  </div>
+
+ 
+
+  <div class="group-status" id="status-${p.id}">
+    載入中...
+  </div>
+
+  <div class="qty">
+
+    <button class="qty-btn"
+      onclick="changeQty('${p.id}', -1)">
+      −
+    </button>
+
+    <span class="qty-number"
+      id="qty-${p.id}">
+      0
+    </span>
+
+    <button class="qty-btn"
+      onclick="changeQty('${p.id}', 1)">
+      ＋
+    </button>
+
+  </div>
+
+`;
+    el.appendChild(div);
+  });
+}
+
+// +- 按鈕
+function changeQty(id, delta){
+  const el = document.getElementById("qty-"+id);
+  let value = parseInt(el.textContent);
+  value += delta;
+  if(value < 0) value = 0;
+  el.textContent = value;
+
+  updateCart();
+}
+
+// 更新購物車
+function updateCart(){
+  cart = {};
+  let total = 0;
+
+  products.forEach(p=>{
+    let qty = parseInt(document.getElementById("qty-"+p.id).textContent);
+    if(qty>0){
+      cart[p.name] = qty;
+      total += qty * 880;
+    }
+  });
+
+  const el = document.getElementById("cart");
+  el.innerHTML="";
+
+  Object.keys(cart).forEach(name=>{
+    const li = document.createElement("li");
+    li.textContent = `${name} x ${cart[name]}`;
+    el.appendChild(li);
+  });
+
+  document.getElementById("total").textContent = "總金額 $" + total;
+}
+
+// 送出訂單
+function submitOrder(){
+  const name = document.getElementById("name").value;
+  const ig = document.getElementById("ig").value;
+
+  if(!name || !ig){
+    alert("請填寫完整資料");
+    return;
+  }
+
+  if(Object.keys(cart).length === 0){
+    alert("請選擇商品");
+    return;
+  }
+
+  db.collection("orders").add({
+    name,
+    ig,
+    cart,
+    status:"未出貨",
+    created:new Date()
+  });
+
+  alert("訂單已送出！");
+}
+
+// 查詢
+function searchOrder(){
+  const name = document.getElementById("searchName").value;
+
+  db.collection("orders")
+  .where("name","==",name)
+  .get()
+  .then(snapshot=>{
+    const el = document.getElementById("result");
+    el.innerHTML="";
+
+    snapshot.forEach(doc=>{
+      const d = doc.data();
+
+      const li = document.createElement("li");
+      li.textContent =
+        Object.entries(d.cart).map(i=>i[0]+"x"+i[1]).join(", ")
+        +"｜"+d.status;
+
+      el.appendChild(li);
+    });
+  });
+}
+
+// 即時團購數量
+function listenTotal(){
+  db.collection("orders").onSnapshot(snapshot=>{
+    let totals = {};
+
+    snapshot.forEach(doc=>{
+      const cart = doc.data().cart;
+      for(let key in cart){
+        totals[key] = (totals[key]||0) + cart[key];
+      }
+    });
+
+    products.forEach(p=>{
+      document.getElementById("total-"+p.id).textContent =
+        totals[p.name] || 0;
+    });
+  });
+}
+
+renderProducts();
+updateGroupStatus();
+
+setInterval(updateGroupStatus, 10000);
+listenTotal();
+// ⏰ 倒數計時
+function updateCountdown(){
+
+  // 👉 改成你的結團時間
+  const endDate = new Date("2026-05-18 23:59:59");
+
+  const now = new Date();
+
+  const diff = endDate - now;
+
+  const el = document.getElementById("countdown");
+
+  if(diff <= 0){
+
+    el.innerHTML = "❌ 本次團購已結束";
+
+    return;
+  }
+
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+
+  const hours = Math.floor(
+    (diff % (1000 * 60 * 60 * 24))
+    / (1000 * 60 * 60)
+  );
+
+  const minutes = Math.floor(
+    (diff % (1000 * 60 * 60))
+    / (1000 * 60)
+  );
+
+el.innerHTML =
+  `🔥 團購即將截止｜剩 ${days}天 ${hours}小時 ${hours}分`;
+}
+
+updateCountdown();
+
+setInterval(updateCountdown, 60000);
+// 🔥 成團提示
+async function updateGroupStatus(){
+
+  const snapshot =
+    await db.collection("orders").get();
+
+  let totals = {};
+
+  products.forEach(p=>{
+    totals[p.id] = 0;
+  });
+
+  snapshot.forEach(doc=>{
+
+    const d = doc.data();
+
+    Object.entries(d.cart).forEach(item=>{
+
+      const id = item[0];
+      const qty = parseInt(item[1]);
+
+      if(totals[id] !== undefined){
+        totals[id] += qty;
+      }
+
+    });
+
+  });
+
+  products.forEach(p=>{
+
+    const total = totals[p.id];
+
+    const el =
+      document.getElementById(
+        `status-${p.id}`
+      );
+
+if(total >= 6){
+
+  el.innerHTML =
+    `✨ 已達成團門檻`;
+
+  el.style.color = "#d97706";
+
+}else{
+
+  el.innerHTML =
+    `等待更多旅伴一起成團 🧶`;
+
+  el.style.color = "#888";
+}
+
+  });
+
+}
+
+</script>
+
 </body>
 </html>
