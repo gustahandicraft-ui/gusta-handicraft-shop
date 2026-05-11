@@ -11,7 +11,7 @@
 body {
   font-family: "Helvetica", sans-serif;
   background: linear-gradient(#f8f3ed, #efe7dc);
-  padding: 20px;
+  padding: 28px;
   color: #5c4b3b;
 }
 
@@ -53,15 +53,21 @@ input {
 
 .grid {
   display: grid;
-  grid-template-columns: 2fr;
-  gap: 12px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
 
+}
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
 }
 
 .card {
   background: white;
   border-radius: 14px;
-  padding: 10px;
+  padding: 14px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.05);
 }
 
@@ -126,6 +132,10 @@ button.submit {
   font-weight:600;
   margin-bottom:10px;
 }
+.product-img {
+  border-radius: 14px;
+  margin-bottom: 12px;
+}
 
 .qty{
   display:flex;
@@ -142,6 +152,9 @@ button.submit {
   color:#5c4b3b;
   font-size:22px;
   cursor:pointer;
+}
+.qty-btn:active {
+  transform: scale(0.92);
 }
 
 .qty-number{
