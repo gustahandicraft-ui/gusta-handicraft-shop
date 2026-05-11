@@ -90,9 +90,10 @@ input {
 
 button.submit {
   width: 100%;
-  padding: 12px;
+  font-size: 16px;
+  padding: 14px;
   border: none;
-  border-radius: 12px;
+  border-radius: 14px;
   background: #cbb59b;
   color: white;
   margin-top: 10px;
@@ -133,20 +134,28 @@ button.submit {
 }
 
 .qty-btn{
-  width:38px;
-  height:38px;
+  width:42px;
+  height:42px;
   border:none;
-  border-radius:999px;
+  border-radius:50%;
   background:#e7d7c7;
   color:#5c4b3b;
-  font-size:20px;
+  font-size:22px;
   cursor:pointer;
 }
 
 .qty-number{
-  min-width:20px;
+  font-size: 16px;
+  min-width:28px;
   text-align:center;
   font-weight:600;
+}
+
+@media (max-width: 768px) {
+  .qty-btn {
+    width: 46px;
+    height: 46px;
+    font-size: 24px;
 }
 .group-status{
   margin-top:8px;
