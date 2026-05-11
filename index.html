@@ -8,9 +8,13 @@
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
 <style>
+* {
+  box-sizing: border-box;
+}
 body {
   font-family: "Helvetica", sans-serif;
   background: linear-gradient(#f8f3ed, #efe7dc);
+  padding-bottom: 120px;
   padding: 28px;
   color: #5c4b3b;
 }
@@ -53,9 +57,8 @@ input {
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 18px;
 }
 @media (max-width: 768px) {
   .grid {
@@ -66,7 +69,7 @@ input {
 
 .card {
   background: white;
-  border-radius: 14px;
+  border-radius: 16px;
   padding: 14px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.05);
 }
@@ -134,7 +137,7 @@ button.submit {
 }
 .product-img {
   border-radius: 14px;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
 
 .qty{
@@ -169,6 +172,7 @@ button.submit {
     width: 46px;
     height: 46px;
     font-size: 24px;
+  }
 }
 .group-status{
   margin-top:8px;
@@ -184,13 +188,15 @@ button.submit {
   padding:12px;
   border-radius:12px;
 }
-.product-img{
-  width:100%;
-  aspect-ratio:1/1;
-  object-fit:cover;
-  border-radius:14px;
-  margin-bottom:10px;
+.product-img {
+  width: 100%;
+  aspect-ratio: 1/1;
+  object-fit: cover;
+  border-radius: 14px;
+  margin-bottom: 10px;
+  display: block;
 }
+
 </style>
 </head>
 
