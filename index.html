@@ -149,6 +149,22 @@ button.submit {
   font-size:13px;
   font-weight:600;
 }
+.notice{
+  font-size:13px;
+  color:#7a6a5a;
+  line-height:1.7;
+  margin:14px 0;
+  background:#fff8f1;
+  padding:12px;
+  border-radius:12px;
+}
+.product-img{
+  width:100%;
+  aspect-ratio:1/1;
+  object-fit:cover;
+  border-radius:14px;
+  margin-bottom:10px;
+}
 </style>
 </head>
 
@@ -180,6 +196,10 @@ button.submit {
 <h3>🛒 購物車</h3>
 <ul id="cart"></ul>
 <p id="total">總金額 $0</p>
+<p class="notice">
+送出後不代表完成訂購，<br>
+待確認成團後將另行通知付款與填寫收件資料。
+</p>
 <button class="submit" onclick="submitOrder()">送出訂單</button>
 </div>
 
@@ -202,10 +222,30 @@ const db = firebase.firestore();
 
 // 商品
 const products = [
-{ id:"001_London", name:"001 London" },
-{ id:"002_Minneapolis", name:"002 Minneapolis" },
-{ id:"003_Praha", name:"003 Praha" },
-{ id:"004_Bukchon", name:"004 Bukchon" },
+{
+  id:"001_London",
+  name:"001 London Lace",
+  img:"images/LondonLace.jpg"
+},
+
+{ id:"001_LondonSuriSilkCloud",
+ name:"001 London Suri Silk Cloud"
+  img:"images/LondonSuriSilkCloud.jpg"
+},
+
+{ id:"002_Minneapolis",
+ name:"002 Minneapolis"
+  img:"images/Minneapolis.jpg"
+},
+{ id:"003_Praha", 
+name:"003 Praha",
+img:"images/Praha.jpg
+},
+
+{ id:"004_Bukchon",
+  name:"004 Bukchon",
+img:"images/Bukchonseoul.jpg },
+
 { id:"005_Toronto", name:"005 Toronto" },
 { id:"006_Grampians", name:"006 Grampians" },
 { id:"007_DC", name:"007 Washington DC" },
@@ -224,6 +264,8 @@ function renderProducts(){
     div.className="card";
 
 div.innerHTML=`
+
+<img src="${p.img}" class="product-img">
 
   <div class="product-name">
     ${p.name}
