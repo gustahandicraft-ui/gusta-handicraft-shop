@@ -48,6 +48,15 @@ input {
   border-radius: 10px;
   border: 1px solid #e5d5c3;
   background: #fffaf5;
+
+input {
+  font-size: 16px;
+}
+
+@media (max-width: 768px) {
+  input {
+    font-size: 18px;
+    padding: 12px;
 }
 
 .grid {
@@ -222,50 +231,46 @@ const db = firebase.firestore();
 
 // 商品
 const products = [
-[
   {
     "id": "001_London",
     "name": "001 London Lace",
-    "img": "images/LondonLace.jpg"
+    "img": "https://raw.githubusercontent.com/gustahandicraft-ui/gusta-handicraft-shop/main/images/LondonLace.jpg"
   },
   {
     "id": "001_LondonSuriSilkCloud",
     "name": "001 London Suri Silk Cloud",
-    "img": "images/LondonSuriSilkCloud.jpg"
+    "img": "https://raw.githubusercontent.com/gustahandicraft-ui/gusta-handicraft-shop/main/images/LondonSuriSilkCloud.jpg"
   },
   {
     "id": "002_Minneapolis",
     "name": "002 Minneapolis",
-    "img": "images/Minneapolis.jpg"
+    "img": "https://raw.githubusercontent.com/gustahandicraft-ui/gusta-handicraft-shop/main/images/Minneapolis.jpg"
   },
   {
     "id": "003_Praha",
     "name": "003 Praha",
-    "img": "images/Praha.jpg"
+    "img": "https://raw.githubusercontent.com/gustahandicraft-ui/gusta-handicraft-shop/main/images/Praha.jpg"
   },
   {
     "id": "004_Bukchon",
     "name": "004 Bukchon",
-    "img": "images/BukchonSeoul.jpg"
+    "img": "https://raw.githubusercontent.com/gustahandicraft-ui/gusta-handicraft-shop/main/images/BukchonSeoul.jpg"
   },
   {
     "id": "005_Toronto_Lace",
     "name": "005 Toronto Lace",
-    "img": "images/TorontoLace.jpg"
+    "img": "https://raw.githubusercontent.com/gustahandicraft-ui/gusta-handicraft-shop/main/images/TorontoLace.jpg"
   },
   {
     "id": "005_Toronto_Mohair",
     "name": "005 Toronto Mohair",
-    "img": "images/TorontoMohair.jpg"
+    "img": "https://raw.githubusercontent.com/gustahandicraft-ui/gusta-handicraft-shop/main/images/TorontoMohair.jpg"
   },
   {
     "id": "006_Grampians",
     "name": "006 Grampians",
-    "img": "images/Grampians.jpg"
-  }
-{ id:"007_DC", name:"007 Washington DC" },
-{ id:"008_Zermatt", name:"008 Zermatt" },
-{ id:"009_NH", name:"009 New Hampshire" }
+    "img": "https://raw.githubusercontent.com/gustahandicraft-ui/gusta-handicraft-shop/main/images/Grampians.jpg"
+  },
 ];
 
 let cart = {};
