@@ -288,16 +288,18 @@ fetch("https://script.google.com/macros/s/AKfycbzHHU9a58gbcsOrJs-Z35_8TA9olot_hY
     }
   })
   .then(data => {
-    console.log("PARSED:", data);
+  console.log("RAW DATA:", data);
 
-    const list = Array.isArray(data) ? data : data.data || [];
+  const list = Array.isArray(data) ? data : data.data || [];
 
-    products = list.filter(p => p.status === "on");
+  console.log("LIST:", list);
 
-    renderProducts();
-    updateGroupStatus();
-    listenTotal();
-  })
+  products = list.filter(p => p.status === "on");
+
+  console.log("FILTERED:", products);
+
+  renderProducts();
+})
   .catch(err => {
     console.error("❌ 讀取失敗：", err);
   });
