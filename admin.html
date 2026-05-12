@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+<script>
+emailjs.init("Bv3jNth_VV48IwhIK");
+</script>
 <meta charset="UTF-8">
 <title>gusta.handicraft｜後台管理</title>
 
@@ -53,11 +57,15 @@ button {
   <p id="totalOrders">訂單數：0</p>
   <ul id="productStats"></ul>
 </div>
+<div style="margin-bottom:15px;">
+  <input id="searchOrder" placeholder="搜尋姓名 / Email / 訂單編號"
+    style="padding:8px;width:100%;border-radius:8px;border:1px solid #ccc;">
+</div>
 
 
 <div id="orders"></div>
-<script>
 
+<script>
 // 🔥 Firebase（填你的）
 const firebaseConfig = {
   apiKey: "AIzaSyDm6qL6HhI_6nv0Uahrb6RqVFh0V7nI000",
@@ -67,6 +75,14 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
+
+function formatTime(created){
+  const time = created?.seconds
+    ? new Date(created.seconds * 1000)
+    : new Date(created);
+
+  return time.toLocaleString();
+}
 
 // 即時監聽訂單
 db.collection("orders").orderBy("created","desc")
@@ -87,21 +103,47 @@ db.collection("orders").orderBy("created","desc")
     const d = doc.data();
 
     // 統計商品
-    for (let key in d.cart) {
+    for (let key in (d.cart || {})) {
       productStats[key] = (productStats[key] || 0) + d.cart[key];
     }
 
     const div = document.createElement("div");
     div.className = "card";
 
-    div.innerHTML = `
-      <b>${d.name}</b>（${d.ig}）<br>
-      🧶 ${Object.entries(d.cart).map(i=>i[0]+" x "+i[1]).join(", ")}<br>
-      📦 狀態：${d.status}<br>
-      🕒 ${new Date(d.created.seconds * 1000).toLocaleString()}<br><br>
-      <button onclick="updateStatus('${doc.id}', '已出貨')">標記已出貨</button>
-      <button onclick="updateStatus('${doc.id}', '已完成')">標記完成</button>
-    `;
+div.innerHTML = `
+  <b>${d.orderId}</b><br>
+  ${d.name}（${d.email}）<br>
+🧶 ${
+Object.entries(d.cart || {}).length
+  ? Object.entries(d.cart || {}).map(i=>{
+      const productNames = {
+        "001_London":"001 London Lace",
+        "001_LondonSuriSilkCloud":"001 London Suri Silk Cloud",
+        "002_Minneapolis":"002 Minneapolis",
+        "003_Praha":"003 Praha",
+        "004_Bukchon":"004 Bukchon",
+        "005_Toronto_Lace":"005 Toronto Lace",
+        "005_Toronto_Mohair":"005 Toronto Mohair",
+        "006_Grampians":"006 Grampians"
+      };
+
+      return (productNames[i[0]] || i[0]) + " x " + i[1];
+
+    }).join(", ")
+  : "（無商品）"
+}
+  📦 狀態：${d.status}<br>
+  📨 修改需求：${d.request}<br>
+  🕒 ${formatTime(d.created)}<br>
+
+  <button onclick="updateStatus('${doc.id}', '已出貨')">
+    標記已出貨
+  </button>
+
+  <button onclick="updateStatus('${doc.id}', '已完成')">
+    標記完成
+  </button>
+`;
 
     container.appendChild(div);
   });
@@ -117,11 +159,39 @@ db.collection("orders").orderBy("created","desc")
   });
 
 });
+function sendStatusEmail(orderId, name, email, status){
 
-// 更新狀態
+  emailjs.send(
+    "service_hc29cbj",
+    "template_status",
+    {
+      order_id: orderId,
+      to_name: name,
+      to_email: email,
+      status: status
+    }
+  ).catch(err => {
+    console.log("Email error:", err);
+  });
+
+}
+
 function updateStatus(id, status){
+
   db.collection("orders").doc(id).update({
     status: status
+  });
+
+  // 👉 半自動通知
+  db.collection("orders").doc(id).get().then(doc=>{
+    const d = doc.data();
+
+    sendStatusEmail(
+      d.orderId,
+      d.name,
+      d.email,
+      status
+    );
   });
 }
 // 📊 匯出CSV
@@ -153,7 +223,7 @@ function exportCSV(){
           item[0],
           item[1],
           d.status,
-          new Date(d.created.seconds * 1000).toLocaleString()
+          formatTime(d.created)
         ]);
 
       });
