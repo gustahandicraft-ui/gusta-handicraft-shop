@@ -61,20 +61,30 @@ const db = firebase.firestore();
 
 // 商品
 let products = [];
-let cart = {};
 
-// Google Sheet 商品
 fetch("https://script.google.com/macros/s/AKfycbxWYRimY_Ald1aUueGV74d39rHgmM_V-p-vOOnry8dQBgGGDt8KcX66wYZWRHhrTP39/exec")
-.then(res => res.json())
-.then(data => {
+  .then(res => res.text())
+  .then(text => {
+    try {
+      const data = JSON.parse(text);
 
-  products = Array.isArray(data) ? data.filter(p => p.status === "on") : [];
+      products = Array.isArray(data)
+        ? data.filter(p => p.status === "on")
+        : [];
 
-  renderProducts();
-  listenTotal();
-  updateGroupStatus();
+      renderProducts();
+      updateGroupStatus();
+      listenTotal();
 
-});
+    } catch (e) {
+      console.error("Google Sheet JSON error:", e);
+      products = [];
+    }
+  })
+  .catch(err => {
+    console.error("Fetch failed:", err);
+    products = [];
+  });
 
 // ===== 工具 =====
 function formatTime(t){
@@ -205,35 +215,35 @@ function searchOrder(){
           return (p? p.name : i[0]) + " x " + i[1];
         }).join(", ");
 
-        li.textContent = `${d.orderId}｜${items}`;
-        el.appendChild(li);
-      }
-    });
+       li.textContent =
+  d.orderId + "｜" +
+  Object.entries(d.cart || {})
+    .map(([id, qty]) => {
+      const product = products.find(p => p.id === id);
+      return (product ? product.name : id) + " x " + qty;
+    })
+    .join(", ");
   });
 }
 
 // ===== 成團統計 =====
 function listenTotal(){
-
   db.collection("orders").onSnapshot(snapshot=>{
-
-    let totals={};
+    let totals = {};
 
     snapshot.forEach(doc=>{
       const cart = doc.data().cart || {};
-      Object.entries(cart).forEach(([k,v])=>{
-        totals[k] = (totals[k]||0)+v;
-      });
+
+      for(let key in cart){
+        totals[key] = (totals[key] || 0) + cart[key];
+      }
     });
 
     products.forEach(p=>{
-      const el = document.getElementById("status-"+p.id);
-      if(!el) return;
-
-      const total = totals[p.id] || 0;
-
-      el.textContent =
-        total >= 6 ? "✨ 已成團" : "等待成團 🧶";
+      const el = document.getElementById(`total-${p.id}`);
+      if(el){
+        el.textContent = totals[p.id] || 0;
+      }
     });
   });
 }
