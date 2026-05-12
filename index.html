@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 <meta charset="UTF-8">
 <title>gusta.handicraft｜Travel Yarn 團購</title>
 
@@ -9,21 +10,30 @@
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
 
+<script>
+emailjs.init("Bv3jNth_VV48IwhIK");
+</script>
+
 <style>
 * {
   box-sizing: border-box;
 }
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=Noto+Sans+TC:wght@300;400;500&display=swap');
+
 body {
-  font-family: "Helvetica", sans-serif;
+  font-family: "Outfit", "Noto Sans TC", sans-serif;
   background: linear-gradient(#f8f3ed, #efe7dc);
-  padding-bottom: 120px;
+  padding-bottom: 320px;
   padding: 28px;
   color: #5c4b3b;
+  line-height: 1.7;
+  letter-spacing: 0.2px;
 }
 
 h1 {
   font-weight: 500;
   font-size:24px;
+  letter-spacing: 0.5px;
 }
 
 h2 {
@@ -59,15 +69,21 @@ input {
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 18px;
 }
 
-@media (max-width: 820px) {
+@media (max-width: 768px) {
+
+  body{
+    padding:16px;
+  }
+
   .grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
+    gap: 12px;
   }
+
 }
 
 .card {
@@ -113,14 +129,13 @@ button.submit {
 }
 
 .cart {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  margin-top: 30px;
   background: white;
-  padding: 12px;
-  box-shadow: 0 -2px 12px rgba(0,0,0,0.1);
+  padding: 18px;
+  border-radius: 18px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
 }
+
 .product-name{
   font-weight:600;
   font-size:16px;
@@ -200,6 +215,7 @@ button.submit {
   display: block;
 }
 
+
 </style>
 </head>
 
@@ -225,6 +241,7 @@ button.submit {
 <h3>👤 填寫資料</h3>
 <input id="name" placeholder="請填寫LINE社群完整暱稱">
 <input id="ig" placeholder="請填寫IG帳號（若使用LINE可填LINE名稱）">
+<input id="email" placeholder="請填寫 Email（用於訂單通知）">
 
 <div class="grid" id="products"></div>
 
@@ -257,51 +274,51 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
 // 商品
-const products = [
-  {
-    "id": "001_London",
-    "name": "001 London Lace",
-    "img": "https://raw.githubusercontent.com/gustahandicraft-ui/gusta-handicraft-shop/main/images/LondonLace.jpg"
-  },
-  {
-    "id": "001_LondonSuriSilkCloud",
-    "name": "001 London Suri Silk Cloud",
-    "img": "https://raw.githubusercontent.com/gustahandicraft-ui/gusta-handicraft-shop/main/images/LondonSuriSilkCloud.jpg"
-  },
-  {
-    "id": "002_Minneapolis",
-    "name": "002 Minneapolis",
-    "img": "https://raw.githubusercontent.com/gustahandicraft-ui/gusta-handicraft-shop/main/images/Minneapolis.jpg"
-  },
-  {
-    "id": "003_Praha",
-    "name": "003 Praha",
-    "img": "https://raw.githubusercontent.com/gustahandicraft-ui/gusta-handicraft-shop/main/images/Praha.jpg"
-  },
-  {
-    "id": "004_Bukchon",
-    "name": "004 Bukchon",
-    "img": "https://raw.githubusercontent.com/gustahandicraft-ui/gusta-handicraft-shop/main/images/BukchonSeoul.jpg"
-  },
-  {
-    "id": "005_Toronto_Lace",
-    "name": "005 Toronto Lace",
-    "img": "https://raw.githubusercontent.com/gustahandicraft-ui/gusta-handicraft-shop/main/images/TorontoLace.jpg"
-  },
-  {
-    "id": "005_Toronto_Mohair",
-    "name": "005 Toronto Mohair",
-    "img": "https://raw.githubusercontent.com/gustahandicraft-ui/gusta-handicraft-shop/main/images/TorontoMohair.jpg"
-  },
-  {
-    "id": "006_Grampians",
-    "name": "006 Grampians",
-    "img": "https://raw.githubusercontent.com/gustahandicraft-ui/gusta-handicraft-shop/main/images/Grampians.jpg"
-  },
-];
+let products = [];
 
+fetch("https://script.google.com/macros/s/AKfycbxWYRimY_Ald1aUueGV74d39rHgmM_V-p-vOOnry8dQBgGGDt8KcX66wYZWRHhrTP39/exec")
+  .then(res => res.json())
+  .then(data => {
+
+    products = data.filter(p => p.status === "on");
+
+    renderProducts();
+    listenTotal();
+    updateGroupStatus();
+
+  });
 let cart = {};
 
+function sendOrderEmail(orderId, name, email, cart){
+
+  const items = Object.entries(cart)
+    .map(i => `${i[0]} x ${i[1]}`)
+    .join("\n");
+
+  emailjs.send("service_hc29cbj", "template_umcpk5k", {
+    order_id: orderId,
+    to_name: name,
+    to_email: email,
+    message: items
+  });
+}
+function updateStatus(id, status){
+
+  db.collection("orders").doc(id).update({
+    status: status
+  });
+
+  db.collection("orders").doc(id).get().then(doc=>{
+    const d = doc.data();
+
+    sendStatusEmail(
+      d.orderId,
+      d.name,
+      d.email,
+      status
+    );
+  });
+}
 // 渲染商品
 function renderProducts(){
   const el = document.getElementById("products");
@@ -314,9 +331,11 @@ div.innerHTML=`
 
 <img src="${p.img}" class="product-img">
 
-  <div class="product-name">
-    ${p.name}
-  </div>
+<div class="product-name">
+  ${p.name}
+</div>
+
+<p>$${p.price}</p>
 
  
 
@@ -367,19 +386,26 @@ function updateCart(){
   products.forEach(p=>{
     let qty = parseInt(document.getElementById("qty-"+p.id).textContent);
     if(qty>0){
-      cart[p.name] = qty;
-      total += qty * 880;
+      cart[p.id] = qty;
+      total += qty * Number(p.price);
     }
   });
 
   const el = document.getElementById("cart");
   el.innerHTML="";
 
-  Object.keys(cart).forEach(name=>{
-    const li = document.createElement("li");
-    li.textContent = `${name} x ${cart[name]}`;
-    el.appendChild(li);
-  });
+Object.keys(cart).forEach(id=>{
+
+  const product = products.find(p => p.id === id);
+
+  const li = document.createElement("li");
+
+  li.textContent =
+    `${product.name} x ${cart[id]}`;
+
+  el.appendChild(li);
+
+});
 
   document.getElementById("total").textContent = "總金額 $" + total;
 }
@@ -388,8 +414,9 @@ function updateCart(){
 function submitOrder(){
   const name = document.getElementById("name").value;
   const ig = document.getElementById("ig").value;
+  const email = document.getElementById("email").value;
 
-  if(!name || !ig){
+  if(!name || !ig || !email){
     alert("請填寫完整資料");
     return;
   }
@@ -399,23 +426,30 @@ function submitOrder(){
     return;
   }
 
-  db.collection("orders").add({
-    name,
-    ig,
-    cart,
-    status:"未出貨",
-    created:new Date()
-  });
+ const orderId = "TY" + Date.now();
 
-  alert("訂單已送出！");
+db.collection("orders").add({
+  orderId,
+  name,
+  email,
+  ig,
+  cart,
+  status: "未出貨",
+  request: "none",
+  created: new Date()
+});
+
+// 🟢 自動寄信
+sendOrderEmail(orderId, name, email, cart);
+
+alert("訂單已送出！已寄出確認信：" + orderId);
 }
 
 // 查詢
 function searchOrder(){
-  const name = document.getElementById("searchName").value;
+  const input = document.getElementById("searchName").value;
 
   db.collection("orders")
-  .where("name","==",name)
   .get()
   .then(snapshot=>{
     const el = document.getElementById("result");
@@ -424,12 +458,26 @@ function searchOrder(){
     snapshot.forEach(doc=>{
       const d = doc.data();
 
-      const li = document.createElement("li");
-      li.textContent =
-        Object.entries(d.cart).map(i=>i[0]+"x"+i[1]).join(", ")
-        +"｜"+d.status;
+      if(
+        d.name === input ||
+        d.email === input ||
+        d.orderId === input
+      ){
 
-      el.appendChild(li);
+        const li = document.createElement("li");
+        li.textContent =
+          d.orderId + "｜" +
+          Object.entries(d.cart).map(i=>{
+
+  const product =
+    products.find(p => p.id === i[0]);
+
+  return product.name + " x " + i[1];
+
+}).join(", ")
+
+        el.appendChild(li);
+      }
     });
   });
 }
