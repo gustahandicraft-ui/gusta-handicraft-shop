@@ -262,8 +262,7 @@ button.submit {
 <ul id="result"></ul>
 
 <script>
-
-// 🔥 Firebase（填你的）
+// 🔥 Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyDm6qL6HhI_6nv0Uahrb6RqVFh0V7nI000",
   authDomain: "gusta-handicraft-91753.firebaseapp.com",
@@ -273,357 +272,146 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-// 商品
 let products = [];
+let cart = {};
 
+// 🔥 Google Sheets API（安全解析版）
 fetch("https://script.google.com/macros/s/AKfycbxWYRimY_Ald1aUueGV74d39rHgmM_V-p-vOOnry8dQBgGGDt8KcX66wYZWRHhrTP39/exec")
   .then(res => res.json())
   .then(data => {
 
-    products = Array.isArray(data)
-  ? data.filter(p => p.status === "on")
-  : [];
+    // ✔ 兼容不同 API 結構
+    const list = data.data || data.result || data || [];
+
+    products = Array.isArray(list)
+      ? list.filter(p => p.status === "on")
+      : [];
 
     renderProducts();
     listenTotal();
     updateGroupStatus();
-
-  });
-function listenTotal(){
-  db.collection("orders").onSnapshot(snapshot=>{
-    let totals = {};
-
-    snapshot.forEach(doc=>{
-      const cart = doc.data().cart || {};
-
-      for(let key in cart){
-        totals[key] = (totals[key] || 0) + cart[key];
-      }
-    });
-
-    products.forEach(p=>{
-      const el = document.getElementById(`total-${p.id}`);
-      if(el){
-        el.textContent = totals[p.id] || 0;
-      }
-    });
-
-  });
-}
-let cart = {};
-
-function sendOrderEmail(orderId, name, email, cart){
-
-  const items = Object.entries(cart)
-    .map(i => `${i[0]} x ${i[1]}`)
-    .join("\n");
-
-  emailjs.send("service_hc29cbj", "template_umcpk5k", {
-    order_id: orderId,
-    to_name: name,
-    to_email: email,
-    message: items
-  });
-}
-function updateStatus(id, status){
-
-  db.collection("orders").doc(id).update({
-    status: status
+  })
+  .catch(err => {
+    console.log("Google Sheet 讀取失敗", err);
   });
 
-  db.collection("orders").doc(id).get().then(doc=>{
-    const d = doc.data();
 
-    sendStatusEmail(
-      d.orderId,
-      d.name,
-      d.email,
-      status
-    );
-  });
-}
-// 渲染商品
-function renderProducts(){
+// ---------------- UI ----------------
+function renderProducts() {
   const el = document.getElementById("products");
+  el.innerHTML = "";
 
-  products.forEach(p=>{
+  products.forEach(p => {
     const div = document.createElement("div");
-    div.className="card";
+    div.className = "card";
 
-div.innerHTML=`
+    div.innerHTML = `
+      <img src="${p.img}" class="product-img">
+      <div class="product-name">${p.name}</div>
+      <p>$${p.price}</p>
 
-<img src="${p.img}" class="product-img">
+      <div class="group-status" id="status-${p.id}">
+        載入中...
+      </div>
 
-<div class="product-name">
-  ${p.name}
-</div>
+      <div class="qty">
+        <button class="qty-btn" onclick="changeQty('${p.id}', -1)">−</button>
+        <span id="qty-${p.id}" class="qty-number">0</span>
+        <button class="qty-btn" onclick="changeQty('${p.id}', 1)">＋</button>
+      </div>
+    `;
 
-<p>$${p.price}</p>
-
- 
-
-  <div class="group-status" id="status-${p.id}">
-    載入中...
-  </div>
-
-  <div class="qty">
-
-    <button class="qty-btn"
-      onclick="changeQty('${p.id}', -1)">
-      −
-    </button>
-
-    <span class="qty-number"
-      id="qty-${p.id}">
-      0
-    </span>
-
-    <button class="qty-btn"
-      onclick="changeQty('${p.id}', 1)">
-      ＋
-    </button>
-
-  </div>
-
-`;
     el.appendChild(div);
   });
 }
 
-// +- 按鈕
-function changeQty(id, delta){
-  const el = document.getElementById("qty-"+id);
+// ---------------- cart ----------------
+function changeQty(id, delta) {
+  const el = document.getElementById("qty-" + id);
   let value = parseInt(el.textContent);
-  value += delta;
-  if(value < 0) value = 0;
+  value = Math.max(0, value + delta);
   el.textContent = value;
-
   updateCart();
 }
 
-// 更新購物車
-function updateCart(){
+function updateCart() {
   cart = {};
   let total = 0;
 
-  products.forEach(p=>{
-    let qty = parseInt(document.getElementById("qty-"+p.id).textContent);
-    if(qty>0){
+  products.forEach(p => {
+    const qty = parseInt(document.getElementById("qty-" + p.id).textContent);
+    if (qty > 0) {
       cart[p.id] = qty;
       total += qty * Number(p.price);
     }
   });
 
   const el = document.getElementById("cart");
-  el.innerHTML="";
+  el.innerHTML = "";
 
-Object.keys(cart).forEach(id=>{
+  Object.keys(cart).forEach(id => {
+    const p = products.find(x => x.id === id);
+    if (!p) return;
 
-  const product = products.find(p => p.id === id);
-
-  const li = document.createElement("li");
-
-  li.textContent =
-    `${product.name} x ${cart[id]}`;
-
-  el.appendChild(li);
-
-});
+    const li = document.createElement("li");
+    li.textContent = `${p.name} x ${cart[id]}`;
+    el.appendChild(li);
+  });
 
   document.getElementById("total").textContent = "總金額 $" + total;
 }
 
-// 送出訂單
-function submitOrder(){
-  const name = document.getElementById("name").value;
-  const ig = document.getElementById("ig").value;
-  const email = document.getElementById("email").value;
-
-  if(!name || !ig || !email){
-    alert("請填寫完整資料");
-    return;
-  }
-
-  if(Object.keys(cart).length === 0){
-    alert("請選擇商品");
-    return;
-  }
-
- const orderId = "TY" + Date.now();
-
-db.collection("orders").add({
-  orderId,
-  name,
-  email,
-  ig,
-  cart,
-  status: "未出貨",
-  request: "none",
-  created: new Date()
-});
-
-// 🟢 自動寄信
-sendOrderEmail(orderId, name, email, cart);
-
-alert("訂單已送出！已寄出確認信：" + orderId);
-}
-
-// 查詢
-function searchOrder(){
-  const input = document.getElementById("searchName").value;
-
-  db.collection("orders")
-  .get()
-  .then(snapshot=>{
-    const el = document.getElementById("result");
-    el.innerHTML="";
-
-    snapshot.forEach(doc=>{
-      const d = doc.data();
-
-      if(
-        d.name === input ||
-        d.email === input ||
-        d.orderId === input
-      ){
-
-        const li = document.createElement("li");
-        li.textContent =
-          d.orderId + "｜" +
-          Object.entries(d.cart || {})
-
-  const product =
-    products.find(p => p.id === i[0]);
-
-  return product.name + " x " + i[1];
-
-}).join(", ")
-
-        el.appendChild(li);
-      }
-    });
-  });
-}
-
-// 即時團購數量
-function listenTotal(){
-  db.collection("orders").onSnapshot(snapshot=>{
+// ---------------- Firebase 即時數量 ----------------
+function listenTotal() {
+  db.collection("orders").onSnapshot(snapshot => {
     let totals = {};
 
-    snapshot.forEach(doc=>{
-      const cart = doc.data().cart;
-      for(let key in cart){
-        totals[key] = (totals[key]||0) + cart[key];
-      }
+    snapshot.forEach(doc => {
+      const c = doc.data().cart || {};
+
+      Object.entries(c).forEach(([id, qty]) => {
+        totals[id] = (totals[id] || 0) + qty;
+      });
     });
 
-    products.forEach(p=>{
-      document.getElementById("total-"+p.id).textContent =
-  totals[p.id] || 0;
+    products.forEach(p => {
+      const el = document.getElementById("total-" + p.id);
+      if (el) el.textContent = totals[p.id] || 0;
     });
   });
 }
 
-renderProducts();
-updateGroupStatus();
+// ---------------- 成團狀態 ----------------
+function updateGroupStatus() {
+  db.collection("orders").get().then(snapshot => {
 
-setInterval(updateGroupStatus, 10000);
-listenTotal();
-// ⏰ 倒數計時
-function updateCountdown(){
+    let totals = {};
+    products.forEach(p => totals[p.id] = 0);
 
-  // 👉 改成你的結團時間
-  const endDate = new Date("2026-05-18 23:59:59");
+    snapshot.forEach(doc => {
+      const cart = doc.data().cart || {};
 
-  const now = new Date();
+      Object.entries(cart).forEach(([id, qty]) => {
+        if (totals[id] !== undefined) {
+          totals[id] += qty;
+        }
+      });
+    });
 
-  const diff = endDate - now;
+    products.forEach(p => {
+      const el = document.getElementById("status-" + p.id);
+      if (!el) return;
 
-  const el = document.getElementById("countdown");
+      el.innerHTML =
+        totals[p.id] >= 6
+          ? "✨ 已達成團門檻"
+          : "等待更多旅伴一起成團 🧶";
 
-  if(diff <= 0){
-
-    el.innerHTML = "❌ 本次團購已結束";
-
-    return;
-  }
-
-  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-
-  const hours = Math.floor(
-    (diff % (1000 * 60 * 60 * 24))
-    / (1000 * 60 * 60)
-  );
-
-  const minutes = Math.floor(
-    (diff % (1000 * 60 * 60))
-    / (1000 * 60)
-  );
-
-el.innerHTML =
-  `🔥 團購即將截止｜剩 ${days}天 ${hours}小時 ${hours}分`;
-}
-
-updateCountdown();
-
-setInterval(updateCountdown, 60000);
-// 🔥 成團提示
-async function updateGroupStatus(){
-
-  const snapshot =
-    await db.collection("orders").get();
-
-  let totals = {};
-
-  products.forEach(p=>{
-    totals[p.id] = 0;
-  });
-
-  snapshot.forEach(doc=>{
-
-    const d = doc.data();
-
-    Object.entries(d.cart).forEach(item=>{
-
-      const id = item[0];
-      const qty = parseInt(item[1]);
-
-      if(totals[id] !== undefined){
-        totals[id] += qty;
-      }
-
+      el.style.color = totals[p.id] >= 6 ? "#d97706" : "#888";
     });
 
   });
-
-  products.forEach(p=>{
-
-    const total = totals[p.id];
-
-    const el =
-      document.getElementById(
-        `status-${p.id}`
-      );
-
-if(total >= 6){
-
-  el.innerHTML =
-    `✨ 已達成團門檻`;
-
-  el.style.color = "#d97706";
-
-}else{
-
-  el.innerHTML =
-    `等待更多旅伴一起成團 🧶`;
-
-  el.style.color = "#888";
 }
-
-  });
-
-}
-
 </script>
 
 </body>
