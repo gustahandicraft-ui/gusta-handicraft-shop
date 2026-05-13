@@ -15,10 +15,11 @@ emailjs.init("Bv3jNth_VV48IwhIK");
 </script>
 
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=Noto+Sans+TC:wght@300;400;500&display=swap');
 * {
   box-sizing: border-box;
 }
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=Noto+Sans+TC:wght@300;400;500&display=swap');
+
 
 body {
   font-family: "Outfit", "Noto Sans TC", sans-serif;
@@ -257,9 +258,30 @@ button.submit {
 </div>
 
 <h3>📦 查詢訂單</h3>
-<input id="searchName" placeholder="輸入LINE暱稱">
+<input id="searchName" placeholder="輸入LINE暱稱 / Email / 訂單編號">
 <button class="submit" onclick="searchOrder()">查詢</button>
 <ul id="result"></ul>
+<textarea
+  id="request"
+  placeholder="如需修改需求可填寫（選填）"
+  style="
+    width:100%;
+    min-height:90px;
+    padding:12px;
+    margin-top:8px;
+    border-radius:12px;
+    border:1px solid #e5d5c3;
+    background:#fffaf5;
+    font-size:15px;
+  "
+></textarea>
+
+<button
+  class="submit"
+  onclick="submitRequest()"
+>
+  申請修改
+</button>
 
 <script>
 // 🔥 Firebase
@@ -295,6 +317,7 @@ fetch("https://script.google.com/macros/s/AKfycby_AxjTKz4Em6rSC9ucUt2lYn7X5k7Qwc
   .catch(err => {
     console.error(err);
   });
+
 // ---------------- UI ----------------
 function renderProducts() {
   const el = document.getElementById("products");
@@ -410,6 +433,270 @@ function updateGroupStatus() {
     });
 
   });
+}
+// ---------------- 送出訂單 ----------------
+function submitOrder() {
+
+  const name =
+    document.getElementById("name").value.trim();
+
+  const ig =
+    document.getElementById("ig").value.trim();
+
+  const email =
+    document.getElementById("email").value.trim();
+
+  // 驗證
+  if (!name || !ig || !email) {
+    alert("請填寫完整資料");
+    return;
+  }
+
+  if (Object.keys(cart).length === 0) {
+    alert("請選擇商品");
+    return;
+  }
+
+  const orderId =
+  "TY" +
+  Math.floor(
+    100000 + Math.random() * 900000
+  );
+
+  db.collection("orders").add({
+    orderId,
+    name,
+    ig,
+    email,
+    cart,
+    status: "未付款",
+    created: firebase.firestore.FieldValue.serverTimestamp()
+  })
+
+  .then(() => {
+  sendOrderEmail(
+  orderId,
+  name,
+  email,
+  cart
+);
+
+    alert(
+    "訂單已送出！\n\n訂單編號：" + orderId
+  );
+
+    // 清空購物車
+    cart = {};
+
+    products.forEach(p => {
+      const qtyEl =
+        document.getElementById("qty-" + p.id);
+
+      if (qtyEl) qtyEl.textContent = 0;
+    });
+
+    updateCart();
+
+    // 清空欄位
+    document.getElementById("name").value = "";
+    document.getElementById("ig").value = "";
+    document.getElementById("email").value = "";
+
+  })
+
+  .catch(err => {
+
+    console.error(err);
+
+    alert("送出失敗，請稍後再試");
+
+  });
+}
+// ---------------- 查詢訂單 ----------------
+function searchOrder() {
+
+  const input =
+    document.getElementById("searchName")
+    .value
+    .trim();
+
+  if (!input) {
+    alert("請輸入資料");
+    return;
+  }
+
+  db.collection("orders")
+    .get()
+
+    .then(snapshot => {
+
+      const el =
+        document.getElementById("result");
+
+      el.innerHTML = "";
+
+      let found = false;
+
+      snapshot.forEach(doc => {
+
+        const d = doc.data();
+
+        if (
+
+          d.name === input ||
+
+          d.email === input ||
+
+          d.orderId === input
+
+        ) {
+
+          found = true;
+
+          const li =
+            document.createElement("li");
+
+          // 商品文字
+          const items =
+            Object.entries(d.cart)
+              .map(([id, qty]) => {
+
+                const product =
+                  products.find(
+                    p => p.id === id
+                  );
+
+                return product
+                  ? `${product.name} x ${qty}`
+                  : `${id} x ${qty}`;
+
+              })
+              .join(" , ");
+
+          li.innerHTML = `
+            <div style="
+              background:white;
+              padding:12px;
+              border-radius:12px;
+              margin-bottom:10px;
+            ">
+              <b>${d.orderId}</b><br>
+              ${items}<br>
+              狀態：${d.status}
+            </div>
+          `;
+
+          el.appendChild(li);
+
+        }
+
+      });
+
+      if (!found) {
+
+        el.innerHTML =
+          "<p>查無訂單</p>";
+
+      }
+
+    })
+
+    .catch(err => {
+
+      console.error(err);
+
+      alert("查詢失敗");
+
+    });
+
+}
+// ---------------- 寄送訂單確認信 ----------------
+function sendOrderEmail(orderId, name, email, cart){
+
+  const items =
+    Object.entries(cart)
+      .map(([id, qty]) => {
+
+        const product =
+          products.find(p => p.id === id);
+
+        return product
+          ? `${product.name} x ${qty}`
+          : `${id} x ${qty}`;
+
+      })
+      .join("<br>");
+
+ return emailjs.send(
+    "service_hc29cbj",
+    "template_umcpk5k",
+    {
+      order_id: orderId,
+      to_name: name,
+      to_email: email,
+      message: items
+    }
+  )
+
+  .then(() => {
+
+    console.log("✅ Email sent");
+
+  })
+
+  .catch(err => {
+
+    console.error("❌ Email failed", err);
+
+  });
+
+}
+// ---------------- 申請修改 ----------------
+function submitRequest() {
+
+  const input = document.getElementById("searchName").value.trim();
+  const requestText = document.getElementById("request").value.trim();
+
+  if (!input || !requestText) {
+    alert("請先輸入查詢資料，並填寫修改需求");
+    return;
+  }
+
+  db.collection("orders")
+    .get()
+    .then(snapshot => {
+
+      let found = false;
+
+      snapshot.forEach(doc => {
+        const d = doc.data();
+
+        if (
+          d.name === input ||
+          d.email === input ||
+          d.orderId === input
+        ) {
+          found = true;
+
+          db.collection("orders").doc(doc.id).update({
+            request: requestText,
+            requestStatus: "待處理"
+          });
+        }
+      });
+
+      if (found) {
+        alert("已送出修改申請");
+        document.getElementById("request").value = "";
+      } else {
+        alert("找不到對應訂單");
+      }
+
+    })
+    .catch(err => {
+      console.error(err);
+      alert("送出失敗，請稍後再試");
+    });
 }
 </script>
 
