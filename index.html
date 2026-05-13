@@ -20,7 +20,6 @@ emailjs.init("Bv3jNth_VV48IwhIK");
   box-sizing: border-box;
 }
 
-
 body {
   font-family: "Outfit", "Noto Sans TC", sans-serif;
   background: linear-gradient(#f8f3ed, #efe7dc);
@@ -47,8 +46,8 @@ h2 {
   border-radius: 10px;
   border: 1px solid #e5d5c3;
   background: #fffaf5;
-
 }
+
 h2-1 {
   font-weight: 550;
 }
@@ -72,6 +71,34 @@ input {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 18px;
+  width: 100%;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 18px;
+  width: 100%;
+}
+
+.card {
+  background: white;
+  border-radius: 16px;
+  padding: 14px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+
+  width: 100%;
+  min-width: 0;
+}
+
+.product-name{
+  font-weight:600;
+  font-size:16px;
+  margin-bottom:8px;
+  line-height:1.45;
+
+  word-break: break-word;
+  overflow-wrap: anywhere;
 }
 
 @media (max-width: 768px) {
@@ -81,10 +108,37 @@ input {
   }
 
   .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    align-items: start;
+  }
+
+  .card {
+    width: 100%;
+    padding: 12px;
+    border-radius: 16px;
+  }
+
+  .product-name {
+    font-size: 14px;
+  }
+
+  .group-box,
+  .group-status{
+    font-size:12px;
+  }
+
+  .qty-btn {
+    width: 42px;
+    height: 42px;
+    font-size: 22px;
+  }
+}
+
+  .grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 12px;
   }
-
 }
 
 .card {
@@ -92,6 +146,9 @@ input {
   border-radius: 16px;
   padding: 14px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+
+  width: 100%;
+  min-width: 0;
 }
 
 .qty {
@@ -141,6 +198,10 @@ button.submit {
   font-weight:600;
   font-size:16px;
   margin-bottom:8px;
+  line-height:1.45;
+
+  word-break: break-word;
+  overflow-wrap: anywhere;
 }
 
 .group-box{
@@ -154,9 +215,14 @@ button.submit {
   font-weight:600;
   margin-bottom:10px;
 }
+
 .product-img {
+  width: 100%;
+  aspect-ratio: 1/1;
+  object-fit: cover;
   border-radius: 14px;
   margin-bottom: 10px;
+  display: block;
 }
 
 .qty{
@@ -175,6 +241,7 @@ button.submit {
   font-size:22px;
   cursor:pointer;
 }
+
 .qty-btn:active {
   transform: scale(0.92);
 }
@@ -184,20 +251,15 @@ button.submit {
   min-width:28px;
   text-align:center;
   font-weight:600;
+
 }
 
-@media (max-width: 768px) {
-  .qty-btn {
-    width: 46px;
-    height: 46px;
-    font-size: 24px;
-  }
-}
 .group-status{
   margin-top:8px;
   font-size:13px;
   font-weight:600;
 }
+
 .notice{
   font-size:13px;
   color:#7a6a5a;
@@ -207,16 +269,6 @@ button.submit {
   padding:12px;
   border-radius:12px;
 }
-.product-img {
-  width: 100%;
-  aspect-ratio: 1/1;
-  object-fit: cover;
-  border-radius: 14px;
-  margin-bottom: 10px;
-  display: block;
-}
-
-
 </style>
 </head>
 
@@ -232,7 +284,6 @@ button.submit {
   align-items:center;
   padding:20px;
 ">
-
   <img
     id="modalImg"
     style="
@@ -241,11 +292,12 @@ button.submit {
       border-radius:16px;
     "
   >
-
 </div>
+
 <h1>🧵 gusta.handicraft</h1>
 <p>韓國手染線與編織小物團購</p>
 <h3 id="countdown"></h3>
+
 <h2>年初熱銷好評再加開！來自韓國 @travel_yarn 的手染線<p>
 <p>將旅行途中看見的風景與色彩， 一點一滴染進毛線裡。 每一顆都是獨一無二的風景收藏 ✨<p>
 
@@ -264,7 +316,6 @@ button.submit {
 <p>部分商品因製作與成本因素設有不同成團門檻<p>
 <p>詳細規則請參考各商品下方說明 ✨<p>
 <p>
-
 
 <h3>👤 填寫資料</h3>
 <input id="name" placeholder="請填寫LINE社群完整暱稱">
@@ -288,6 +339,7 @@ button.submit {
 <input id="searchName" placeholder="輸入LINE暱稱 / Email / 訂單編號">
 <button class="submit" onclick="searchOrder()">查詢</button>
 <ul id="result"></ul>
+
 <textarea
   id="request"
   placeholder="如需修改需求可填寫（選填）"
@@ -311,7 +363,6 @@ button.submit {
 </button>
 
 <script>
-// 🔥 Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyDm6qL6HhI_6nv0Uahrb6RqVFh0V7nI000",
   authDomain: "gusta-handicraft-91753.firebaseapp.com",
@@ -327,7 +378,6 @@ let cart = {};
 fetch("https://script.google.com/macros/s/AKfycby_AxjTKz4Em6rSC9ucUt2lYn7X5k7Qwcj0HhvUGl7eRr8NX8gd7VufeTEhVe-R1ifQ/exec")
   .then(res => res.json())
   .then(data => {
-
     console.log("DATA:", data);
 
     products = data.filter(
@@ -335,17 +385,13 @@ fetch("https://script.google.com/macros/s/AKfycby_AxjTKz4Em6rSC9ucUt2lYn7X5k7Qwc
     );
 
     renderProducts();
-
     updateGroupStatus();
-
     listenTotal();
-
   })
   .catch(err => {
     console.error(err);
   });
 
-// ---------------- UI ----------------
 function renderProducts() {
   const el = document.getElementById("products");
   el.innerHTML = "";
@@ -355,11 +401,11 @@ function renderProducts() {
     div.className = "card";
 
     div.innerHTML = `
-     <img
-  src="${p.img}"
-  class="product-img"
-  onclick="openImage('${p.img}')"
->
+      <img
+        src="${p.img}"
+        class="product-img"
+        onclick="openImage('${p.img}')"
+      >
 
       <div class="product-name">${p.name}</div>
       <p>$${p.price}</p>
@@ -369,7 +415,7 @@ function renderProducts() {
       </div>
 
       <div class="qty">
-       <button class="qty-btn" onclick="changeQty('${p.id}', -1)">-</button>
+        <button class="qty-btn" onclick="changeQty('${p.id}', -1)">-</button>
         <span id="qty-${p.id}" class="qty-number">0</span>
         <button class="qty-btn" onclick="changeQty('${p.id}', 1)">+</button>
       </div>
@@ -379,7 +425,6 @@ function renderProducts() {
   });
 }
 
-// ---------------- cart ----------------
 function changeQty(id, delta) {
   const el = document.getElementById("qty-" + id);
   let value = parseInt(el.textContent);
@@ -415,7 +460,6 @@ function updateCart() {
   document.getElementById("total").textContent = "總金額 $" + total;
 }
 
-// ---------------- Firebase 即時數量 ----------------
 function listenTotal() {
   db.collection("orders").onSnapshot(snapshot => {
     let totals = {};
@@ -435,10 +479,8 @@ function listenTotal() {
   });
 }
 
-// ---------------- 成團狀態 ----------------
 function updateGroupStatus() {
   db.collection("orders").get().then(snapshot => {
-
     let colorTotals = {};
     let seriesTotals = {};
 
@@ -494,22 +536,14 @@ function updateGroupStatus() {
         el.style.color = "#888";
       }
     });
-
   });
 }
-// ---------------- 送出訂單 ----------------
+
 function submitOrder() {
+  const name = document.getElementById("name").value.trim();
+  const ig = document.getElementById("ig").value.trim();
+  const email = document.getElementById("email").value.trim();
 
-  const name =
-    document.getElementById("name").value.trim();
-
-  const ig =
-    document.getElementById("ig").value.trim();
-
-  const email =
-    document.getElementById("email").value.trim();
-
-  // 驗證
   if (!name || !ig || !email) {
     alert("請填寫完整資料");
     return;
@@ -521,10 +555,10 @@ function submitOrder() {
   }
 
   const orderId =
-  "TY" +
-  Math.floor(
-    100000 + Math.random() * 900000
-  );
+    "TY" +
+    Math.floor(
+      100000 + Math.random() * 900000
+    );
 
   db.collection("orders").add({
     orderId,
@@ -535,53 +569,39 @@ function submitOrder() {
     status: "未付款",
     created: firebase.firestore.FieldValue.serverTimestamp()
   })
-
   .then(() => {
-  sendOrderEmail(
-  orderId,
-  name,
-  email,
-  cart
-);
+    sendOrderEmail(
+      orderId,
+      name,
+      email,
+      cart
+    );
 
     alert(
-    "訂單已送出！\n\n訂單編號：" + orderId
-  );
+      "訂單已送出！\n\n訂單編號：" + orderId
+    );
 
-    // 清空購物車
     cart = {};
 
     products.forEach(p => {
-      const qtyEl =
-        document.getElementById("qty-" + p.id);
-
+      const qtyEl = document.getElementById("qty-" + p.id);
       if (qtyEl) qtyEl.textContent = 0;
     });
 
     updateCart();
 
-    // 清空欄位
     document.getElementById("name").value = "";
     document.getElementById("ig").value = "";
     document.getElementById("email").value = "";
-
   })
-
   .catch(err => {
-
     console.error(err);
-
     alert("送出失敗，請稍後再試");
-
   });
 }
-// ---------------- 查詢訂單 ----------------
-function searchOrder() {
 
-  const input =
-    document.getElementById("searchName")
-    .value
-    .trim();
+function searchOrder() {
+  const input = document.getElementById("searchName").value.trim();
 
   if (!input) {
     alert("請輸入資料");
@@ -590,49 +610,34 @@ function searchOrder() {
 
   db.collection("orders")
     .get()
-
     .then(snapshot => {
-
-      const el =
-        document.getElementById("result");
-
+      const el = document.getElementById("result");
       el.innerHTML = "";
 
       let found = false;
 
       snapshot.forEach(doc => {
-
         const d = doc.data();
 
         if (
-
           d.name === input ||
-
           d.email === input ||
-
           d.orderId === input
-
         ) {
-
           found = true;
 
-          const li =
-            document.createElement("li");
+          const li = document.createElement("li");
 
-          // 商品文字
           const items =
             Object.entries(d.cart)
               .map(([id, qty]) => {
-
-                const product =
-                  products.find(
-                    p => p.id === id
-                  );
+                const product = products.find(
+                  p => p.id === id
+                );
 
                 return product
                   ? `${product.name} x ${qty}`
                   : `${id} x ${qty}`;
-
               })
               .join(" , ");
 
@@ -650,47 +655,32 @@ function searchOrder() {
           `;
 
           el.appendChild(li);
-
         }
-
       });
 
       if (!found) {
-
-        el.innerHTML =
-          "<p>查無訂單</p>";
-
+        el.innerHTML = "<p>查無訂單</p>";
       }
-
     })
-
     .catch(err => {
-
       console.error(err);
-
       alert("查詢失敗");
-
     });
-
 }
-// ---------------- 寄送訂單確認信 ----------------
-function sendOrderEmail(orderId, name, email, cart){
 
+function sendOrderEmail(orderId, name, email, cart){
   const items =
     Object.entries(cart)
       .map(([id, qty]) => {
-
-        const product =
-          products.find(p => p.id === id);
+        const product = products.find(p => p.id === id);
 
         return product
           ? `${product.name} x ${qty}`
           : `${id} x ${qty}`;
-
       })
       .join("<br>");
 
- return emailjs.send(
+  return emailjs.send(
     "service_hc29cbj",
     "template_muprcbi",
     {
@@ -700,23 +690,15 @@ function sendOrderEmail(orderId, name, email, cart){
       message: items
     }
   )
-
   .then(() => {
-
     console.log("✅ Email sent");
-
   })
-
   .catch(err => {
-
     console.error("❌ Email failed", err);
-
   });
-
 }
-// ---------------- 申請修改 ----------------
-function submitRequest() {
 
+function submitRequest() {
   const input = document.getElementById("searchName").value.trim();
   const requestText = document.getElementById("request").value.trim();
 
@@ -728,7 +710,6 @@ function submitRequest() {
   db.collection("orders")
     .get()
     .then(snapshot => {
-
       let found = false;
 
       snapshot.forEach(doc => {
@@ -754,32 +735,25 @@ function submitRequest() {
       } else {
         alert("找不到對應訂單");
       }
-
     })
     .catch(err => {
       console.error(err);
       alert("送出失敗，請稍後再試");
     });
 }
+
 function openImage(src){
-
-  const modal =
-    document.getElementById("imageModal");
-
-  const img =
-    document.getElementById("modalImg");
+  const modal = document.getElementById("imageModal");
+  const img = document.getElementById("modalImg");
 
   img.src = src;
-
   modal.style.display = "flex";
 }
 
 document.getElementById("imageModal")
 .addEventListener("click", () => {
-
   document.getElementById("imageModal")
     .style.display = "none";
-
 });
 </script>
 
