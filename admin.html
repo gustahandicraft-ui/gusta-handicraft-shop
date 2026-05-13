@@ -71,6 +71,7 @@ button {
   顯示全部
 </button>
 
+</div>
 <div id="orders"></div>
 
 <script>
@@ -109,7 +110,6 @@ db.collection("orders").orderBy("created","desc")
     totalOrders++;
 
     const d = doc.data();
-
     // 統計商品
     for (let key in (d.cart || {})) {
       productStats[key] = (productStats[key] || 0) + d.cart[key];
