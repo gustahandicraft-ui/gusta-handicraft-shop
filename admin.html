@@ -31,12 +31,14 @@ h1 {
 }
 
 button {
-  padding: 6px 10px;
+  padding: 8px 12px;
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
   background: #d6bfa6;
   color: white;
   cursor: pointer;
+  margin-top: 6px;
+  margin-right: 6px;
 }
 
 .stats {
@@ -59,9 +61,15 @@ button {
 </div>
 <div style="margin-bottom:15px;">
   <input id="searchOrder" placeholder="搜尋姓名 / Email / 訂單編號"
-    style="padding:8px;width:100%;border-radius:8px;border:1px solid #ccc;">
-</div>
+  style="padding:8px;width:100%;border-radius:8px;border:1px solid #ccc;">
 
+<button onclick="searchAdminOrder()" style="margin-top:8px;">
+  搜尋訂單
+</button>
+
+<button onclick="clearAdminSearch()" style="margin-top:8px;">
+  顯示全部
+</button>
 
 <div id="orders"></div>
 
@@ -133,7 +141,12 @@ Object.entries(d.cart || {}).length
   : "（無商品）"
 }
   📦 狀態：${d.status}<br>
-  📨 修改需求：${d.request}<br>
+  📨 修改需求：${d.request || "無"}<br>
+  📩 修改狀態：${d.requestStatus || "未處理"}<br><br>
+
+<button onclick="replyRequest('${doc.id}')">
+  已回覆修改
+</button>
   🕒 ${formatTime(d.created)}<br>
 
   <button onclick="updateStatus('${doc.id}', '已出貨')">
@@ -263,6 +276,50 @@ function checkPassword(){
     alert("密碼錯誤");
     document.body.innerHTML = "";
   }
+}
+// 🔒 查詢訂單
+function searchAdminOrder(){
+
+  const keyword =
+    document.getElementById("searchOrder").value.trim();
+
+  if(!keyword){
+    alert("請輸入搜尋內容");
+    return;
+  }
+
+  const cards = document.querySelectorAll(".card");
+
+  cards.forEach(card => {
+    const text = card.textContent;
+
+    card.style.display =
+      text.includes(keyword) ? "block" : "none";
+  });
+
+}
+
+function clearAdminSearch(){
+
+  document.getElementById("searchOrder").value = "";
+
+  const cards = document.querySelectorAll(".card");
+
+  cards.forEach(card => {
+    card.style.display = "block";
+  });
+
+}
+function replyRequest(id){
+
+  db.collection("orders").doc(id).update({
+
+    requestStatus: "已回覆",
+
+    request: ""
+
+  });
+
 }
 </script>
 
