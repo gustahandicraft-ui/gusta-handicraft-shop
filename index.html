@@ -233,10 +233,16 @@ button.submit {
 <p>• 預購日期05/12~05/18<p>
 <p>• 收單後需等候設計師手染製作，需等候21-30個工作日不等，若欲連續假期則往後順延。<p>
 <p>• 請各位下單若是可以留下方便聯絡的方式，如果有缺色或者問題才能夠找到人～<p>
-<p>• 手染線為訂製商品除重大瑕疵外不接受退換貨唷～詳細請參考購買及退換貨政策<p>
+<p>• ”手染線“為訂製商品除重大瑕疵外不接受退換貨唷～詳細請參考購買及退換貨政策<p>
 <p>• 下單後即無法取消訂單，請確認好所需之數量以及顏色，並確認有付款成功訂單才算成立唷<p>
 <p>• 本團購為韓國原廠授權販售，價格已包含國際訂購、分裝整理與台灣服務成本<p>
 <p>•有關任何訂單問題請至官方LINE@詢問<p>
+<p>-----------------------<p>
+<p>本次也同步開放韓國人氣編織小工具gongsisabun團購<p>
+<p>包含 Yarn Holder、Cone Keyring、Clicker 等作品搭配小物<p>
+<p>部分商品因製作與成本因素設有不同成團門檻<p>
+<p>詳細規則請參考各商品下方說明 ✨<p>
+<p>
 
 
 <h3>👤 填寫資料</h3>
@@ -407,16 +413,24 @@ function listenTotal() {
 function updateGroupStatus() {
   db.collection("orders").get().then(snapshot => {
 
-    let totals = {};
-    products.forEach(p => totals[p.id] = 0);
+    let colorTotals = {};
+    let seriesTotals = {};
+
+    products.forEach(p => {
+      colorTotals[p.id] = 0;
+      seriesTotals[p.series] = 0;
+    });
 
     snapshot.forEach(doc => {
       const cart = doc.data().cart || {};
 
       Object.entries(cart).forEach(([id, qty]) => {
-        if (totals[id] !== undefined) {
-          totals[id] += qty;
-        }
+        const product = products.find(p => p.id === id);
+        if (!product) return;
+
+        colorTotals[id] = (colorTotals[id] || 0) + qty;
+        seriesTotals[product.series] =
+          (seriesTotals[product.series] || 0) + qty;
       });
     });
 
@@ -424,12 +438,35 @@ function updateGroupStatus() {
       const el = document.getElementById("status-" + p.id);
       if (!el) return;
 
-      el.innerHTML =
-        totals[p.id] >= 6
-          ? "✨ 已達成團門檻"
-          : "等待更多旅伴一起成團 🧶";
+      const colorTotal = colorTotals[p.id] || 0;
+      const seriesTotal = seriesTotals[p.series] || 0;
 
-      el.style.color = totals[p.id] >= 6 ? "#d97706" : "#888";
+      const colorTarget = Number(p.colorTarget || 0);
+      const totalTarget = Number(p.totalTarget || 0);
+
+      const colorDone =
+        colorTarget > 0 && colorTotal >= colorTarget;
+
+      const totalDone =
+        totalTarget > 0 && seriesTotal >= totalTarget;
+
+      if (colorDone || totalDone) {
+        el.innerHTML = "✨ 已達成團門檻";
+        el.style.color = "#d97706";
+      } else {
+        let text = `等待更多旅伴一起成團 🧶`;
+
+        if (colorTarget) {
+          text += `<br>單色 ${colorTotal}/${colorTarget}`;
+        }
+
+        if (totalTarget) {
+          text += `<br>系列總數 ${seriesTotal}/${totalTarget}`;
+        }
+
+        el.innerHTML = text;
+        el.style.color = "#888";
+      }
     });
 
   });
