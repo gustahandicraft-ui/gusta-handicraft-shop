@@ -275,35 +275,26 @@ const db = firebase.firestore();
 let products = [];
 let cart = {};
 
-// 🔥 Google Sheets API（安全解析版）
-fetch("https://script.google.com/macros/s/AKfycbzHHU9a58gbcsOrJs-Z35_8TA9olot_hYt4GTMfN1a6jnKP8jIf77gBt3bTfG4eyr8A/exec")
-   .then(async res => {
-    const text = await res.text();
-    console.log("RAW DATA:", text);
-
-    try {
-      return JSON.parse(text);
-    } catch (e) {
-      throw new Error("不是 JSON：" + text);
-    }
-  })
+fetch("https://script.google.com/macros/s/AKfycby_AxjTKz4Em6rSC9ucUt2lYn7X5k7Qwcj0HhvUGl7eRr8NX8gd7VufeTEhVe-R1ifQ/exec")
+  .then(res => res.json())
   .then(data => {
-  console.log("RAW DATA:", data);
 
-  const list = Array.isArray(data) ? data : data.data || [];
+    console.log("DATA:", data);
 
-  console.log("LIST:", list);
+    products = data.filter(
+      p => p.status === "on"
+    );
 
-  products = list.filter(p => p.status === "on");
+    renderProducts();
 
-  console.log("FILTERED:", products);
+    updateGroupStatus();
 
-  renderProducts();
-})
+    listenTotal();
+
+  })
   .catch(err => {
-    console.error("❌ 讀取失敗：", err);
+    console.error(err);
   });
-
 // ---------------- UI ----------------
 function renderProducts() {
   const el = document.getElementById("products");
