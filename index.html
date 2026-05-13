@@ -269,6 +269,16 @@ button.submit {
   padding:12px;
   border-radius:12px;
 }
+#countdown{
+  font-size:14px;
+  font-weight:500;
+  background:#fff8f1;
+  border:1px solid #ead9c8;
+  padding:10px 14px;
+  border-radius:14px;
+  display:inline-block;
+  margin-bottom:18px;
+}
 </style>
 </head>
 
@@ -755,6 +765,30 @@ document.getElementById("imageModal")
   document.getElementById("imageModal")
     .style.display = "none";
 });
+
+const endDate = new Date("2026-05-18T23:59:59").getTime();
+
+const timer = setInterval(() => {
+
+  const now = new Date().getTime();
+  const distance = endDate - now;
+
+  if (distance < 0) {
+    clearInterval(timer);
+    document.getElementById("countdown").innerHTML =
+      "團購已結束 ✨";
+    return;
+  }
+
+  const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((distance / (1000 * 60 * 60)) % 24);
+  const minutes = Math.floor((distance / (1000 * 60)) % 60);
+  const seconds = Math.floor((distance / 1000) % 60);
+
+  document.getElementById("countdown").innerHTML =
+    `⏳ 團購倒數 ${days}天 ${hours}時 ${minutes}分 ${seconds}秒`;
+
+}, 1000);
 </script>
 
 </body>
