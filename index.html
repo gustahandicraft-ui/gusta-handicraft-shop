@@ -222,6 +222,27 @@ button.submit {
 
 <body>
 
+<div id="imageModal" style="
+  display:none;
+  position:fixed;
+  z-index:9999;
+  inset:0;
+  background:rgba(0,0,0,0.8);
+  justify-content:center;
+  align-items:center;
+  padding:20px;
+">
+
+  <img
+    id="modalImg"
+    style="
+      max-width:95%;
+      max-height:95%;
+      border-radius:16px;
+    "
+  >
+
+</div>
 <h1>🧵 gusta.handicraft</h1>
 <p>韓國手染線與編織小物團購</p>
 <h3 id="countdown"></h3>
@@ -334,7 +355,12 @@ function renderProducts() {
     div.className = "card";
 
     div.innerHTML = `
-      <img src="${p.img}" class="product-img">
+     <img
+  src="${p.img}"
+  class="product-img"
+  onclick="openImage('${p.img}')"
+>
+
       <div class="product-name">${p.name}</div>
       <p>$${p.price}</p>
 
@@ -735,6 +761,26 @@ function submitRequest() {
       alert("送出失敗，請稍後再試");
     });
 }
+function openImage(src){
+
+  const modal =
+    document.getElementById("imageModal");
+
+  const img =
+    document.getElementById("modalImg");
+
+  img.src = src;
+
+  modal.style.display = "flex";
+}
+
+document.getElementById("imageModal")
+.addEventListener("click", () => {
+
+  document.getElementById("imageModal")
+    .style.display = "none";
+
+});
 </script>
 
 </body>
