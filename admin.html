@@ -142,7 +142,13 @@ Object.entries(d.cart || {}).length
 }
   📦 狀態：${d.status}<br>
   📨 修改需求：${d.request || "無"}<br>
-  📩 修改狀態：${d.requestStatus || "未處理"}<br><br>
+  📩 修改狀態：
+<span style="
+  color:${d.requestStatus === "已回覆" ? "#888" : "#d97706"};
+  font-weight:700;
+">
+  ${d.requestStatus || "未處理"}
+</span>
 
 <button onclick="replyRequest('${doc.id}')">
   已回覆修改
